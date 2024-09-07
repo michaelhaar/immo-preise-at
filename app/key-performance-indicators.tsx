@@ -1,5 +1,6 @@
 import { getDbClient } from './db-client';
 import { formatNumber, getRequiredEnvVar } from './utils';
+import { unstable_noStore as noStore } from 'next/cache';
 
 type KeyPerformanceIndicatorsData = {
   numberOfListings: number;
@@ -12,6 +13,7 @@ type KeyPerformanceIndicatorsData = {
 };
 
 export async function KeyPerformanceIndicators() {
+  noStore();
   const { rows } = await getDbClient().execute({
     sql: `
       SELECT
