@@ -17,11 +17,16 @@ export async function getHistogramData(unsafeParams: Params) {
 
   // return data
   return [
-    { bin: '0-10', count: 186 },
-    { bin: '10-20', count: 305 },
-    { bin: '20-30', count: 237 },
-    { bin: '30-40', count: 73 },
-    { bin: '40-50', count: 209 },
-    { bin: '50-60', count: 214 },
+    { bin: '0-50k€', count: 186 },
+    { bin: '50k€-100k€', count: 305 },
+    { bin: '100k€-250k€', count: 237 },
+    { bin: '250k€-300k€', count: 237 },
+    { bin: '300k€-350k€', count: 73 },
+    { bin: '350k€-400k€', count: 209 },
+    { bin: '400k€-450k€', count: 209 },
+    { bin: '450k€-500k€', count: 209 },
+    { bin: '500k€-550k€', count: 209 },
+    { bin: '550k€-600k€', count: 209 },
+    { bin: '>600k€', count: 214 },
   ];
 }

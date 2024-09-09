@@ -18,5 +18,13 @@ export function PriceHistogram() {
     return <div>Error</div>;
   }
 
-  return <Histogram chartData={data} />;
+  return (
+    <Histogram
+      chartData={data}
+      title="Preisverteilung"
+      description="Anzahl der Inserate in den jeweiligen Preisgruppe"
+      xLabel="Preisgruppen"
+      yLabel="Anzahl"
+    />
+  );
 }
