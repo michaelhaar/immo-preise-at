@@ -17,11 +17,11 @@ export async function getHistogramData(unsafeParams: Params) {
 
   // return data
   return [
-    { month: 'January', desktop: 186, mobile: 80 },
-    { month: 'February', desktop: 305, mobile: 200 },
-    { month: 'March', desktop: 237, mobile: 120 },
-    { month: 'April', desktop: 73, mobile: 190 },
-    { month: 'May', desktop: 209, mobile: 130 },
-    { month: 'June', desktop: 214, mobile: 140 },
+    { bin: '0-10', count: 186 },
+    { bin: '10-20', count: 305 },
+    { bin: '20-30', count: 237 },
+    { bin: '30-40', count: 73 },
+    { bin: '40-50', count: 209 },
+    { bin: '50-60', count: 214 },
   ];
 }
