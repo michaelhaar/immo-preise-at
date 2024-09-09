@@ -2,17 +2,8 @@
 
 import { Bar, BarChart } from 'recharts';
 import { ChartConfig, ChartContainer } from '@/components/ui/chart';
-import { useMutation } from '@tanstack/react-query';
-import { getUser } from './actions';
-
-const chartData = [
-  { month: 'January', desktop: 186, mobile: 80 },
-  { month: 'February', desktop: 305, mobile: 200 },
-  { month: 'March', desktop: 237, mobile: 120 },
-  { month: 'April', desktop: 73, mobile: 190 },
-  { month: 'May', desktop: 209, mobile: 130 },
-  { month: 'June', desktop: 214, mobile: 140 },
-];
+import { useQuery } from '@tanstack/react-query';
+import { getHistogramData } from './actions';
 
 const chartConfig = {
   desktop: {
@@ -26,32 +17,22 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function MyChart() {
-  const {
-    data,
-    mutate: server_getUser,
-    error,
-    isPending,
-  } = useMutation({
-    mutationFn: getUser,
+  const { data, error, isPending } = useQuery({
+    queryKey: ['getHistogramData'],
+    queryFn: () => getHistogramData({ postalCode: '8010' }),
   });
-
-  if (error) {
-    return <div>Error</div>;
-  }
 
   if (isPending) {
     return <div>Loading...</div>;
   }
 
-  if (data) {
-    return <div>Hi {data.name}</div>;
+  if (error) {
+    return <div>Error</div>;
   }
-
-  return <button onClick={() => server_getUser({ email: 'michi@asdf.at', password: '12345' })}>Login</button>;
 
   return (
     <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-      <BarChart accessibilityLayer data={chartData}>
+      <BarChart accessibilityLayer data={data}>
         <Bar dataKey="desktop" fill="var(--color-desktop)" radius={4} />
         <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} />
       </BarChart>
