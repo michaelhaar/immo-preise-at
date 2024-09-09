@@ -1,8 +1,9 @@
 'use client';
 
 import { Bar, BarChart } from 'recharts';
-
 import { ChartConfig, ChartContainer } from '@/components/ui/chart';
+import { useMutation } from '@tanstack/react-query';
+import { getUser } from './actions';
 
 const chartData = [
   { month: 'January', desktop: 186, mobile: 80 },
@@ -25,6 +26,29 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function MyChart() {
+  const {
+    data,
+    mutate: server_getUser,
+    error,
+    isPending,
+  } = useMutation({
+    mutationFn: getUser,
+  });
+
+  if (error) {
+    return <div>Error</div>;
+  }
+
+  if (isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (data) {
+    return <div>Hi {data.name}</div>;
+  }
+
+  return <button onClick={() => server_getUser({ email: 'michi@asdf.at', password: '12345' })}>Login</button>;
+
   return (
     <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
       <BarChart accessibilityLayer data={chartData}>
