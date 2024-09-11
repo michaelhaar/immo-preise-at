@@ -1,5 +1,7 @@
 import { Suspense } from 'react';
 import { KeyPerformanceIndicators } from './key-performance-indicators';
+import { HistogramLivingArea } from '@/components/ui/histograms/histogram-living-area';
+import { HistogramPurchasingPrice } from '@/components/ui/histograms/histogram-purchasing-price';
 
 export default function Home() {
   return (
@@ -9,6 +11,8 @@ export default function Home() {
         <Suspense fallback={<div>Lade...</div>}>
           <KeyPerformanceIndicators />
         </Suspense>
+        <HistogramPurchasingPrice />
+        <HistogramLivingArea />
       </main>
     </div>
   );
