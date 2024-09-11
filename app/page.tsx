@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { KeyPerformanceIndicators } from './key-performance-indicators';
 import { PriceHistogram } from './price-histogram';
+import { HistogramLivingArea } from './histogram-living-area';
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
           <KeyPerformanceIndicators />
         </Suspense>
         <PriceHistogram />
+        <HistogramLivingArea />
       </main>
     </div>
   );
