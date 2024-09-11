@@ -11,8 +11,8 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-type HistogramData = {
-  bin: string;
+export type HistogramData = {
+  binLabel: string;
   count: number;
 }[];
 
@@ -35,7 +35,7 @@ export function Histogram({ chartData, title, description, xLabel, yLabel }: Pro
         <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
           <BarChart accessibilityLayer data={chartData}>
             <CartesianGrid vertical={false} />
-            <XAxis dataKey="bin" tickLine={false} angle={-70} height={120} textAnchor="end">
+            <XAxis dataKey="binLabel" tickMargin={10} height={60} scale="band">
               <Label value={xLabel} position="insideBottom" className="fill-foreground" fontSize={12} />
             </XAxis>
             <YAxis>

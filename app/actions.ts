@@ -1,32 +1,68 @@
 'use server';
 
 import { z } from 'zod';
+import { getDbClient } from './db-client';
+import { getRequiredEnvVar } from './utils';
+
+const supportedTargetColumns = ['purchasingPrice', 'livingArea'];
 
 const paramsSchema = z.object({
-  postalCode: z.string(),
+  targetColumnIndex: z
+    .number()
+    .min(0)
+    .max(supportedTargetColumns.length - 1),
+  binWidth: z.number(),
+  upperLimit: z.number(),
 });
 type Params = z.infer<typeof paramsSchema>;
 
+const histogramDataSchema = z.array(
+  z.object({
+    binFloor: z.number(),
+    count: z.number(),
+  })
+);
+
 export async function getHistogramData(unsafeParams: Params) {
   // parse and validate the input params
-  const params = paramsSchema.parse(unsafeParams);
-  console.log('params', params);
+  const { targetColumnIndex, binWidth, upperLimit } = paramsSchema.parse(unsafeParams);
+  const targetColumn = supportedTargetColumns[targetColumnIndex];
 
-  // simulate a db call
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  // see: https://popsql.com/sql-templates/analytics/how-to-create-histograms-in-sql
+  const { rows } = await getDbClient().execute({
+    sql: `
+      WITH bins AS (
+        SELECT 
+          CASE
+            WHEN ${targetColumn} >= (:upperLimit) THEN (:upperLimit)
+            ELSE floor(${targetColumn} * 1.0 / (:binWidth)) * (:binWidth)
+          END AS binFloor,
+          count(id) AS count
+        FROM 
+          tackedRealEstateListings
+        WHERE 
+          userId = (:userId)
+        AND 
+          projectName = (:projectName)
+        AND
+          ${targetColumn} IS NOT NULL
+        GROUP BY 1
+        ORDER BY 1
+      )
 
-  // return data
-  return [
-    { bin: '0-50k€', count: 186 },
-    { bin: '50k€-100k€', count: 305 },
-    { bin: '100k€-250k€', count: 237 },
-    { bin: '250k€-300k€', count: 237 },
-    { bin: '300k€-350k€', count: 73 },
-    { bin: '350k€-400k€', count: 209 },
-    { bin: '400k€-450k€', count: 209 },
-    { bin: '450k€-500k€', count: 209 },
-    { bin: '500k€-550k€', count: 209 },
-    { bin: '550k€-600k€', count: 209 },
-    { bin: '>600k€', count: 214 },
-  ];
+      SELECT 
+        binFloor,
+        count
+      FROM bins
+      ORDER BY 1;
+    `,
+    args: {
+      userId: getRequiredEnvVar('USER_ID'),
+      projectName: getRequiredEnvVar('PROJECT_NAME'),
+      binWidth,
+      upperLimit,
+    },
+  });
+
+  return histogramDataSchema.parse(rows);
 }

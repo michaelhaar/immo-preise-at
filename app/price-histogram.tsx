@@ -2,12 +2,12 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { getHistogramData } from './actions';
-import { Histogram } from '@/components/ui/histogram';
+import { Histogram, HistogramData } from '@/components/ui/histogram';
 
 export function PriceHistogram() {
   const { data, error, isPending } = useQuery({
     queryKey: ['getHistogramData'],
-    queryFn: () => getHistogramData({ postalCode: '8010' }),
+    queryFn: () => getHistogramData({ targetColumnIndex: 0, binWidth: 50000, upperLimit: 700000 }),
   });
 
   if (isPending) {
@@ -18,12 +18,25 @@ export function PriceHistogram() {
     return <div>Error</div>;
   }
 
+  const chartData: HistogramData = data.map((row, index) => {
+    if (index === data.length - 1) {
+      return {
+        ...row,
+        binLabel: `>${row.binFloor / 1000}`,
+      };
+    }
+    return {
+      ...row,
+      binLabel: `${row.binFloor / 1000}`,
+    };
+  });
+
   return (
     <Histogram
-      chartData={data}
+      chartData={chartData}
       title="Preisverteilung"
       description="Anzahl der Inserate in den jeweiligen Preisgruppe"
-      xLabel="Preisgruppen"
+      xLabel="Preisgruppen in Tausend €"
       yLabel="Anzahl"
     />
   );
