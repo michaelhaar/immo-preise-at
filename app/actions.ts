@@ -2,7 +2,7 @@
 
 import { z } from 'zod';
 import { getDbClient } from './db-client';
-import { getRequiredEnvVar } from './utils';
+import { getRequiredEnvVar } from '@/lib/utils';
 
 const supportedTargetColumns = ['purchasingPrice', 'livingArea'];
 

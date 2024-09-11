@@ -1,5 +1,5 @@
 import { getDbClient } from './db-client';
-import { formatNumber, getRequiredEnvVar } from './utils';
+import { formatNumber, getRequiredEnvVar } from '@/lib/utils';
 import { unstable_noStore as noStore } from 'next/cache';
 
 type KeyPerformanceIndicatorsData = {

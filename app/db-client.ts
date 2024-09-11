@@ -1,6 +1,6 @@
 import { Client, createClient } from '@libsql/client';
 
-import { getRequiredEnvVar } from './utils';
+import { getRequiredEnvVar } from '@/lib/utils';
 
 let dbClient: Client | null = null;
 
