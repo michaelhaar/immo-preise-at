@@ -1,8 +1,8 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { getHistogramData } from './actions';
-import { Histogram, HistogramData } from '@/components/ui/histogram';
+import { getHistogramData } from '@/app/actions';
+import { Histogram, HistogramData } from './histogram';
 
 export function HistogramLivingArea() {
   const { data, error, isPending } = useQuery({

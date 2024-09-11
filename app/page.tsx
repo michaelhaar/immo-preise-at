@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { KeyPerformanceIndicators } from './key-performance-indicators';
-import { HistogramLivingArea } from './histogram-living-area';
-import { HistogramPurchasingPrice } from './histogram-purchasing-price';
+import { HistogramLivingArea } from '@/components/ui/histograms/histogram-living-area';
+import { HistogramPurchasingPrice } from '@/components/ui/histograms/histogram-purchasing-price';
 
 export default function Home() {
   return (

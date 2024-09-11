@@ -2,7 +2,7 @@
 
 import { Bar, BarChart, CartesianGrid, Label, LabelList, XAxis, YAxis } from 'recharts';
 import { ChartConfig, ChartContainer } from '@/components/ui/chart';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../card';
 
 const chartConfig = {
   count: {
