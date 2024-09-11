@@ -4,9 +4,9 @@ import { useQuery } from '@tanstack/react-query';
 import { getHistogramData } from './actions';
 import { Histogram, HistogramData } from '@/components/ui/histogram';
 
-export function PriceHistogram() {
+export function HistogramPurchasingPrice() {
   const { data, error, isPending } = useQuery({
-    queryKey: ['getHistogramData'],
+    queryKey: ['getHistogramPurchasingPrice'],
     queryFn: () => getHistogramData({ targetColumnIndex: 0, binWidth: 50000, upperLimit: 700000 }),
   });
 
@@ -35,7 +35,7 @@ export function PriceHistogram() {
     <Histogram
       chartData={chartData}
       title="Preisverteilung"
-      description="Anzahl der Inserate in den jeweiligen Preisgruppe"
+      description="Anzahl der Inserate nach angebotenem Verkaufspreis"
       xLabel="Preisgruppen in Tausend €"
       yLabel="Anzahl"
     />
