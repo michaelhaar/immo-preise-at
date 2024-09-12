@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { getHistogramData } from '@/app/actions';
+import { getHistogramData } from '@/actions/getHistogramData';
 import { Histogram, HistogramData } from './histogram';
 
 export function HistogramPurchasingPrice() {

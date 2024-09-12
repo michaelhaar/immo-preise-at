@@ -1,7 +1,7 @@
 'use server';
 
 import { z } from 'zod';
-import { getDbClient } from '../db-client';
+import { getDbClient } from '@/lib/db-client';
 import { getRequiredEnvVar } from '@/lib/utils';
 
 const paramsSchema = z.object({});

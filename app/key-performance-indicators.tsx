@@ -1,4 +1,4 @@
-import { getDbClient } from './db-client';
+import { getDbClient } from '@/lib/db-client';
 import { formatNumber, getRequiredEnvVar } from '@/lib/utils';
 import { unstable_noStore as noStore } from 'next/cache';
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { getScatterData } from '@/app/actions/getScatterData';
+import { getScatterData } from '@/actions/getScatterData';
 import { useQuery } from '@tanstack/react-query';
 import ScatterPlot, { ScatterData } from './scatter-plot';
 
