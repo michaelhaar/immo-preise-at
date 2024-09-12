@@ -32,7 +32,7 @@ export default function ScatterPlot({ data }: Props) {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Scatter Plot</CardTitle>
+        <CardTitle>Preis vs. Größe</CardTitle>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
