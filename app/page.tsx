@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import { KeyPerformanceIndicators } from './key-performance-indicators';
 import { HistogramLivingArea } from '@/components/ui/histograms/histogram-living-area';
 import { HistogramPurchasingPrice } from '@/components/ui/histograms/histogram-purchasing-price';
+import { ScatterPurchasingPriceOverLivingArea } from '@/components/ui/scatter-plots/scatter-purchasing-price-over-living-area';
 
 export default function Home() {
   return (
@@ -11,6 +12,7 @@ export default function Home() {
         <Suspense fallback={<div>Lade...</div>}>
           <KeyPerformanceIndicators />
         </Suspense>
+        <ScatterPurchasingPriceOverLivingArea />
         <HistogramPurchasingPrice />
         <HistogramLivingArea />
       </main>
