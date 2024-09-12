@@ -25,8 +25,9 @@ export function ScatterPurchasingPriceOverLivingArea() {
     };
   });
 
-  chartData.push({ x: 0, yLine: 0 });
-  chartData.push({ x: 200, yLine: 920 });
+  // TODO: add regression line
+  // chartData.push({ x: 0, yLine: 0 });
+  // chartData.push({ x: 200, yLine: 920 });
 
   return <ScatterPlot data={chartData} />;
 }
