@@ -3,11 +3,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { getHistogramData } from '@/actions/getHistogramData';
 import { Histogram, HistogramData } from './histogram';
+import { getFormattedPercentage, getTotalCount } from './utils';
 
 export function HistogramPurchasingPrice() {
   const { data, error, isPending } = useQuery({
     queryKey: ['getHistogramPurchasingPrice'],
-    queryFn: () => getHistogramData({ targetColumnIndex: 0, binWidth: 50000, upperLimit: 700000 }),
+    queryFn: () => getHistogramData({ targetColumnIndex: 0, binWidth: 100000, upperLimit: 700000 }),
   });
 
   if (isPending) {
@@ -18,26 +19,21 @@ export function HistogramPurchasingPrice() {
     return <div>Error</div>;
   }
 
+  const totalCount = getTotalCount(data);
   const chartData: HistogramData = data.map((row, index) => {
     if (index === data.length - 1) {
       return {
         ...row,
-        binLabel: `>${row.binFloor / 1000}`,
+        binLabel: `>${row.binFloor / 1000}k`,
+        label: getFormattedPercentage(totalCount, row.count),
       };
     }
     return {
       ...row,
-      binLabel: `${row.binFloor / 1000}`,
+      binLabel: `${row.binFloor / 1000}k`,
+      label: getFormattedPercentage(totalCount, row.count),
     };
   });
 
-  return (
-    <Histogram
-      chartData={chartData}
-      title="Preisverteilung"
-      description="Anzahl der Inserate nach angebotenem Verkaufspreis"
-      xLabel="Preisgruppen in Tausend €"
-      yLabel="Anzahl"
-    />
-  );
+  return <Histogram chartData={chartData} />;
 }
