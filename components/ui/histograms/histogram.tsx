@@ -1,8 +1,7 @@
 'use client';
 
-import { Bar, BarChart, CartesianGrid, Label, LabelList, XAxis, YAxis } from 'recharts';
-import { ChartConfig, ChartContainer } from '@/components/ui/chart';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../card';
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from 'recharts';
 
 const chartConfig = {
   count: {
@@ -14,39 +13,36 @@ const chartConfig = {
 export type HistogramData = {
   binLabel: string;
   count: number;
+  label: string;
 }[];
 
 type Props = {
   chartData: HistogramData;
-  title?: string;
-  description?: string;
-  xLabel?: string;
-  yLabel?: string;
 };
 
-export function Histogram({ chartData, title, description, xLabel, yLabel }: Props) {
+export function Histogram({ chartData }: Props) {
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle>{title}</CardTitle>
-        <CardDescription>{description}</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-          <BarChart accessibilityLayer data={chartData}>
-            <CartesianGrid vertical={false} />
-            <XAxis dataKey="binLabel" tickMargin={10} height={60} scale="band">
-              <Label value={xLabel} position="insideBottom" className="fill-foreground" fontSize={12} />
-            </XAxis>
-            <YAxis>
-              <Label value={yLabel} position="insideLeft" className="fill-foreground" fontSize={12} angle={-90} />
-            </YAxis>
-            <Bar dataKey="count" fill="var(--color-count)" radius={4}>
-              <LabelList position="top" offset={12} className="fill-foreground" fontSize={12} />
-            </Bar>
-          </BarChart>
-        </ChartContainer>
-      </CardContent>
-    </Card>
+    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
+      <BarChart
+        accessibilityLayer
+        data={chartData}
+        layout="vertical"
+        margin={{
+          left: -20,
+          right: 20,
+        }}
+        {...{
+          overflow: 'visible', // see: https://github.com/recharts/recharts/issues/1618#issuecomment-1612155672
+        }}
+      >
+        <CartesianGrid vertical={false} />
+        <XAxis dataKey="count" orientation="top" type="number" className="text-[8px]" axisLine={false} />
+        <YAxis dataKey="binLabel" type="category" scale="band" className="text-[8px]" axisLine={false} />
+        <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+        <Bar dataKey="count" fill="var(--color-count)" radius={4}>
+          <LabelList dataKey="label" position="right" className="text-[10px]" />
+        </Bar>
+      </BarChart>
+    </ChartContainer>
   );
 }

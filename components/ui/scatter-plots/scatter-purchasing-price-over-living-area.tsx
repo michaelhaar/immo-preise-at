@@ -2,7 +2,7 @@
 
 import { getScatterData } from '@/actions/getScatterData';
 import { useQuery } from '@tanstack/react-query';
-import ScatterPlot, { ScatterData } from './scatter-plot';
+import ScatterPlot from './scatter-plot';
 
 export function ScatterPurchasingPriceOverLivingArea() {
   const { data, error, isPending } = useQuery({
@@ -18,16 +18,5 @@ export function ScatterPurchasingPriceOverLivingArea() {
     return <div>Error</div>;
   }
 
-  const chartData: ScatterData = data.map((row) => {
-    return {
-      x: row.livingArea,
-      y: typeof row.purchasingPrice === 'number' ? row.purchasingPrice / 1000 : row.purchasingPrice,
-    };
-  });
-
-  // TODO: add regression line
-  // chartData.push({ x: 0, yLine: 0 });
-  // chartData.push({ x: 200, yLine: 920 });
-
-  return <ScatterPlot data={chartData} />;
+  return <ScatterPlot data={data} />;
 }
