@@ -8,6 +8,9 @@ export function useFilters() {
 
   const now = new Date();
   const fromDate = new Date();
+  fromDate.setUTCHours(0, 0, 0, 0);
+  const toDate = new Date();
+  toDate.setUTCHours(23, 59, 59, 999);
 
   switch (dateRange) {
     case '7T':
@@ -32,7 +35,7 @@ export function useFilters() {
 
   return {
     postalCodes: sanitizePostalCodesString(unsafePostalCodes).split(' ').filter(Boolean),
-    fromDate: fromDate.toISOString().slice(0, 10),
-    toDate: now.toISOString().slice(0, 10),
+    fromDate: fromDate.toISOString(),
+    toDate: toDate.toISOString(),
   };
 }
