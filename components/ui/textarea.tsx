@@ -18,4 +18,31 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(({ classNa
 });
 Textarea.displayName = 'Textarea';
 
-export { Textarea };
+const TextareaAutosize = React.forwardRef<HTMLTextAreaElement, TextareaProps>(({ className, ...props }) => {
+  const textAreaRef = React.useRef<HTMLTextAreaElement>(null);
+
+  const resizeTextArea = () => {
+    if (!textAreaRef.current) return;
+
+    textAreaRef.current.style.height = 'auto';
+    textAreaRef.current.style.height = textAreaRef.current.scrollHeight + 'px';
+  };
+
+  function handleChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    resizeTextArea();
+    props.onChange?.(e);
+  }
+
+  return (
+    <Textarea
+      className={cn('min-h-9 resize-none overflow-hidden', className)}
+      ref={textAreaRef}
+      rows={1}
+      {...props}
+      onChange={handleChange}
+    />
+  );
+});
+TextareaAutosize.displayName = 'TextareaAutosize';
+
+export { Textarea, TextareaAutosize };
