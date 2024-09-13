@@ -1,7 +1,7 @@
 'use client';
 
-import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from 'recharts';
 
 const chartConfig = {
   count: {
@@ -30,6 +30,9 @@ export function Histogram({ chartData }: Props) {
         margin={{
           left: -20,
           right: 20,
+        }}
+        {...{
+          overflow: 'visible', // see: https://github.com/recharts/recharts/issues/1618#issuecomment-1612155672
         }}
       >
         <CartesianGrid vertical={false} />
