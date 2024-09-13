@@ -1,7 +1,7 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
 import { getHistogramData } from '@/actions/getHistogramData';
+import { useQuery } from '@tanstack/react-query';
 import { Histogram, HistogramData } from './histogram';
 import { getFormattedPercentage, getTotalCount } from './utils';
 

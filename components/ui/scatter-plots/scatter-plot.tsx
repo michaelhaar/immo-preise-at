@@ -1,7 +1,6 @@
 'use client';
 
-import React from 'react';
-import { Scatter, XAxis, YAxis, CartesianGrid, Dot, ScatterChart } from 'recharts';
+import { CartesianGrid, Dot, Scatter, ScatterChart, XAxis, YAxis } from 'recharts';
 import { ChartContainer } from '../chart';
 
 type DataPoint = {
