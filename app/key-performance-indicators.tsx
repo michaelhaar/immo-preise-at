@@ -65,7 +65,7 @@ export async function KeyPerformanceIndicators() {
 
 function DataPair({ left, right }: { left: string; right: string }) {
   return (
-    <div className="flex justify-between w-full">
+    <div className="flex w-full justify-between">
       <div>{left}</div>
       <div>{right}</div>
     </div>

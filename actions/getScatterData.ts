@@ -1,8 +1,8 @@
 'use server';
 
-import { z } from 'zod';
 import { getDbClient } from '@/lib/db-client';
 import { getRequiredEnvVar } from '@/lib/utils';
+import { z } from 'zod';
 
 const paramsSchema = z.object({});
 type Params = z.infer<typeof paramsSchema>;
@@ -11,7 +11,7 @@ const responseSchema = z.array(
   z.object({
     x: z.number().nullable(),
     y: z.number().nullable(),
-  })
+  }),
 );
 
 export async function getScatterData(unsafeParams: Params) {

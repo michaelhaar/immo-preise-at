@@ -1,8 +1,8 @@
 'use server';
 
-import { z } from 'zod';
 import { getDbClient } from '@/lib/db-client';
 import { getRequiredEnvVar } from '@/lib/utils';
+import { z } from 'zod';
 
 const supportedTargetColumns = ['purchasingPrice', 'livingArea'];
 
@@ -20,7 +20,7 @@ const histogramDataSchema = z.array(
   z.object({
     binFloor: z.number(),
     count: z.number(),
-  })
+  }),
 );
 
 export async function getHistogramData(unsafeParams: Params) {
