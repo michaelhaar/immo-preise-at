@@ -9,8 +9,8 @@ type Params = z.infer<typeof paramsSchema>;
 
 const responseSchema = z.array(
   z.object({
-    livingArea: z.number().nullable(),
-    purchasingPrice: z.number().nullable(),
+    x: z.number().nullable(),
+    y: z.number().nullable(),
   })
 );
 
@@ -22,8 +22,8 @@ export async function getScatterData(unsafeParams: Params) {
   const { rows } = await getDbClient().execute({
     sql: `
       SELECT 
-        purchasingPrice,
-        livingArea
+        purchasingPrice / 1000 AS y,
+        livingArea AS x
       FROM 
         tackedRealEstateListings
       WHERE 
