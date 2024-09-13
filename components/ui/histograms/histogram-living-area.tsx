@@ -1,14 +1,24 @@
 'use client';
 
 import { getHistogramData } from '@/actions/getHistogramData';
+import { useFilters } from '@/hooks/use-filters';
 import { useQuery } from '@tanstack/react-query';
 import { Histogram, HistogramData } from './histogram';
 import { getFormattedPercentage, getTotalCount } from './utils';
 
 export function HistogramLivingArea() {
+  const filters = useFilters();
+
   const { data, error, isPending } = useQuery({
-    queryKey: ['getHistogramLivingArea'],
-    queryFn: () => getHistogramData({ targetColumnIndex: 1, binWidth: 15, upperLimit: 120 }),
+    queryKey: ['getHistogramLivingArea', JSON.stringify(filters)],
+    queryFn: () =>
+      getHistogramData({
+        targetColumnIndex: 1,
+        binWidth: 15,
+        upperLimit: 120,
+        fromDate: filters.fromDate,
+        toDate: filters.toDate,
+      }),
   });
 
   if (isPending) {

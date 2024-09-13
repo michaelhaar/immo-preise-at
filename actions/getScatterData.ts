@@ -4,7 +4,10 @@ import { getDbClient } from '@/lib/db-client';
 import { getRequiredEnvVar } from '@/lib/utils';
 import { z } from 'zod';
 
-const paramsSchema = z.object({});
+const paramsSchema = z.object({
+  fromDate: z.string(),
+  toDate: z.string(),
+});
 type Params = z.infer<typeof paramsSchema>;
 
 const responseSchema = z.array(
@@ -16,7 +19,7 @@ const responseSchema = z.array(
 
 export async function getScatterData(unsafeParams: Params) {
   // parse and validate the input params
-  const {} = paramsSchema.parse(unsafeParams);
+  const { fromDate, toDate } = paramsSchema.parse(unsafeParams);
 
   // see: https://popsql.com/sql-templates/analytics/how-to-create-histograms-in-sql
   const { rows } = await getDbClient().execute({
@@ -30,6 +33,10 @@ export async function getScatterData(unsafeParams: Params) {
         userId = (:userId)
       AND 
         projectName = (:projectName)
+      AND
+        createdAt >= (:fromDate)
+      AND
+        createdAt <= (:toDate)
       ORDER BY
         lastSeenAt DESC
       LIMIT 5000
@@ -37,6 +44,8 @@ export async function getScatterData(unsafeParams: Params) {
     args: {
       userId: getRequiredEnvVar('USER_ID'),
       projectName: getRequiredEnvVar('PROJECT_NAME'),
+      fromDate,
+      toDate,
     },
   });
 

@@ -1,14 +1,24 @@
 'use client';
 
 import { getHistogramData } from '@/actions/getHistogramData';
+import { useFilters } from '@/hooks/use-filters';
 import { useQuery } from '@tanstack/react-query';
 import { Histogram, HistogramData } from './histogram';
 import { getFormattedPercentage, getTotalCount } from './utils';
 
 export function HistogramPurchasingPrice() {
+  const filters = useFilters();
+
   const { data, error, isPending } = useQuery({
-    queryKey: ['getHistogramPurchasingPrice'],
-    queryFn: () => getHistogramData({ targetColumnIndex: 0, binWidth: 100000, upperLimit: 700000 }),
+    queryKey: ['getHistogramPurchasingPrice', JSON.stringify(filters)],
+    queryFn: () =>
+      getHistogramData({
+        targetColumnIndex: 0,
+        binWidth: 100000,
+        upperLimit: 700000,
+        fromDate: filters.fromDate,
+        toDate: filters.toDate,
+      }),
   });
 
   if (isPending) {

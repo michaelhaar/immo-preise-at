@@ -13,6 +13,8 @@ const paramsSchema = z.object({
     .max(supportedTargetColumns.length - 1),
   binWidth: z.number(),
   upperLimit: z.number(),
+  fromDate: z.string(),
+  toDate: z.string(),
 });
 type Params = z.infer<typeof paramsSchema>;
 
@@ -25,7 +27,7 @@ const histogramDataSchema = z.array(
 
 export async function getHistogramData(unsafeParams: Params) {
   // parse and validate the input params
-  const { targetColumnIndex, binWidth, upperLimit } = paramsSchema.parse(unsafeParams);
+  const { targetColumnIndex, binWidth, upperLimit, fromDate, toDate } = paramsSchema.parse(unsafeParams);
   const targetColumn = supportedTargetColumns[targetColumnIndex];
 
   // see: https://popsql.com/sql-templates/analytics/how-to-create-histograms-in-sql
@@ -46,6 +48,10 @@ export async function getHistogramData(unsafeParams: Params) {
           projectName = (:projectName)
         AND
           ${targetColumn} IS NOT NULL
+        AND
+          createdAt >= (:fromDate)
+        AND
+          createdAt <= (:toDate)
         GROUP BY 1
         ORDER BY 1
       )
@@ -61,6 +67,8 @@ export async function getHistogramData(unsafeParams: Params) {
       projectName: getRequiredEnvVar('PROJECT_NAME'),
       binWidth,
       upperLimit,
+      fromDate,
+      toDate,
     },
   });
 
