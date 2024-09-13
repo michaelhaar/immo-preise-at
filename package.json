@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "check:lint": "next lint",
+    "check:prettier": "prettier --check .",
+    "fix:prettier": "prettier --write .",
+    "check:typescript": "tsc --noEmit"
   },
   "dependencies": {
     "@libsql/client": "^0.10.0",
