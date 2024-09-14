@@ -1,42 +1,24 @@
-import { getDbClient } from '@/lib/db-client';
-import { formatNumber, getRequiredEnvVar } from '@/lib/utils';
-import { unstable_noStore as noStore } from 'next/cache';
+'use client';
 
-type KeyPerformanceIndicatorsData = {
-  numberOfListings: number;
-  medianLivingArea: number;
-  averageLivingArea: number;
-  medianPurchasingPrice: number;
-  averagePurchasingPrice: number;
-  medianPurchasingPricePerM2: number;
-  averagePurchasingPricePerM2: number;
-};
+import { useFiltersFromSearchParamsState } from '@/hooks/use-search-params-state';
+import { trpc } from '@/lib/trpc/client';
+import { formatNumber } from '@/lib/utils';
 
-export async function KeyPerformanceIndicators() {
-  noStore();
-  const { rows } = await getDbClient().execute({
-    sql: `
-      SELECT
-        COUNT(*) AS 'numberOfListings',
-        MEDIAN(livingArea) AS 'medianLivingArea',
-        AVG(livingArea) AS 'averageLivingArea',
-        MEDIAN(purchasingPrice) AS 'medianPurchasingPrice',
-        AVG(purchasingPrice) AS 'averagePurchasingPrice',
-        MEDIAN(purchasingPricePerM2) AS 'medianPurchasingPricePerM2',
-        AVG(purchasingPricePerM2) AS 'averagePurchasingPricePerM2'
-      FROM
-        tackedRealEstateListings
-      WHERE
-        userId = (:userId)
-        AND projectName = (:projectName);
-    `,
-    args: {
-      userId: getRequiredEnvVar('USER_ID'),
-      projectName: getRequiredEnvVar('PROJECT_NAME'),
-    },
+export function KeyPerformanceIndicators() {
+  const filters = useFiltersFromSearchParamsState();
+
+  const { data, isPending, error } = trpc.getKeyPerformanceIndicatorData.useQuery({
+    fromDate: filters.fromDate,
+    toDate: filters.toDate,
   });
 
-  const data = rows[0] as unknown as KeyPerformanceIndicatorsData;
+  if (isPending) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error</div>;
+  }
 
   return (
     <div className="w-full max-w-96">

@@ -1,14 +1,19 @@
 'use client';
 
-import { getHistogramData } from '@/actions/getHistogramData';
-import { useQuery } from '@tanstack/react-query';
+import { useFiltersFromSearchParamsState } from '@/hooks/use-search-params-state';
+import { trpc } from '@/lib/trpc/client';
 import { Histogram, HistogramData } from './histogram';
 import { getFormattedPercentage, getTotalCount } from './utils';
 
 export function HistogramPurchasingPrice() {
-  const { data, error, isPending } = useQuery({
-    queryKey: ['getHistogramPurchasingPrice'],
-    queryFn: () => getHistogramData({ targetColumnIndex: 0, binWidth: 100000, upperLimit: 700000 }),
+  const filters = useFiltersFromSearchParamsState();
+
+  const { data, error, isPending } = trpc.getHistogramData.useQuery({
+    targetColumnIndex: 0,
+    binWidth: 100000,
+    upperLimit: 700000,
+    fromDate: filters.fromDate,
+    toDate: filters.toDate,
   });
 
   if (isPending) {

@@ -1,13 +1,15 @@
 'use client';
 
-import { getScatterData } from '@/actions/getScatterData';
-import { useQuery } from '@tanstack/react-query';
+import { useFiltersFromSearchParamsState } from '@/hooks/use-search-params-state';
+import { trpc } from '@/lib/trpc/client';
 import ScatterPlot from './scatter-plot';
 
 export function ScatterPurchasingPriceOverLivingArea() {
-  const { data, error, isPending } = useQuery({
-    queryKey: ['getScatterPurchasingPriceOverLivingArea'],
-    queryFn: () => getScatterData({}),
+  const filters = useFiltersFromSearchParamsState();
+
+  const { data, error, isPending } = trpc.getScatterData.useQuery({
+    fromDate: filters.fromDate,
+    toDate: filters.toDate,
   });
 
   if (isPending) {

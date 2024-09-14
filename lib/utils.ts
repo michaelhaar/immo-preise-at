@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { DateRangeOption, dateRangeOptions, defaultDateRangeOption } from './constants';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -39,4 +40,16 @@ export function formatNumber(number: number | null, optionOverrides?: FormatNumb
   });
 
   return options.unit ? `${formatter.format(number)} ${options.unit}` : formatter.format(number);
+}
+
+export function sanitizePostalCodesString(value: string): string {
+  return value.replace(/[^0-9 ]/g, '');
+}
+
+export function isDateRangeOption(value: string | null): value is DateRangeOption {
+  return dateRangeOptions.includes(value as DateRangeOption);
+}
+
+export function parseDateRange(value: string | null): DateRangeOption {
+  return isDateRangeOption(value) ? value : defaultDateRangeOption;
 }
