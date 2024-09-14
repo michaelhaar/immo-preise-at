@@ -1,20 +1,15 @@
 'use client';
 
-import { getKeyPerformanceIndicatorData } from '@/actions/getKeyPerformanceIndicatorData';
 import { useFilters } from '@/hooks/use-filters';
+import { trpc } from '@/lib/trpc/client';
 import { formatNumber } from '@/lib/utils';
-import { useQuery } from '@tanstack/react-query';
 
 export function KeyPerformanceIndicators() {
   const filters = useFilters();
 
-  const { data, isPending, error } = useQuery({
-    queryKey: ['getKeyPerformanceIndicators', JSON.stringify(filters)],
-    queryFn: () =>
-      getKeyPerformanceIndicatorData({
-        fromDate: filters.fromDate,
-        toDate: filters.toDate,
-      }),
+  const { data, isPending, error } = trpc.getKeyPerformanceIndicatorData.useQuery({
+    fromDate: filters.fromDate,
+    toDate: filters.toDate,
   });
 
   if (isPending) {
