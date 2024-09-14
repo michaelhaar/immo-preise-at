@@ -18,7 +18,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(({ classNa
 });
 Textarea.displayName = 'Textarea';
 
-const TextareaAutosize = React.forwardRef<HTMLTextAreaElement, TextareaProps>(({ className, ...props }) => {
+const TextareaAutosize = React.forwardRef<HTMLTextAreaElement, TextareaProps>(({ className, ...props }, _ref) => {
   const textAreaRef = React.useRef<HTMLTextAreaElement>(null);
 
   const resizeTextArea = () => {
