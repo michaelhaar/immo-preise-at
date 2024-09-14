@@ -1,11 +1,11 @@
 'use client';
 
-import { useFilters } from '@/hooks/use-filters';
+import { useFiltersFromSearchParamsState } from '@/hooks/use-search-params-state';
 import { trpc } from '@/lib/trpc/client';
 import { formatNumber } from '@/lib/utils';
 
 export function KeyPerformanceIndicators() {
-  const filters = useFilters();
+  const filters = useFiltersFromSearchParamsState();
 
   const { data, isPending, error } = trpc.getKeyPerformanceIndicatorData.useQuery({
     fromDate: filters.fromDate,

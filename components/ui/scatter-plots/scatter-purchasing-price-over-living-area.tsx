@@ -1,11 +1,11 @@
 'use client';
 
-import { useFilters } from '@/hooks/use-filters';
+import { useFiltersFromSearchParamsState } from '@/hooks/use-search-params-state';
 import { trpc } from '@/lib/trpc/client';
 import ScatterPlot from './scatter-plot';
 
 export function ScatterPurchasingPriceOverLivingArea() {
-  const filters = useFilters();
+  const filters = useFiltersFromSearchParamsState();
 
   const { data, error, isPending } = trpc.getScatterData.useQuery({
     fromDate: filters.fromDate,

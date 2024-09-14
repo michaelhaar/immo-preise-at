@@ -1,12 +1,12 @@
 'use client';
 
-import { useFilters } from '@/hooks/use-filters';
+import { useFiltersFromSearchParamsState } from '@/hooks/use-search-params-state';
 import { trpc } from '@/lib/trpc/client';
 import { Histogram, HistogramData } from './histogram';
 import { getFormattedPercentage, getTotalCount } from './utils';
 
 export function HistogramPurchasingPrice() {
-  const filters = useFilters();
+  const filters = useFiltersFromSearchParamsState();
 
   const { data, error, isPending } = trpc.getHistogramData.useQuery({
     targetColumnIndex: 0,
