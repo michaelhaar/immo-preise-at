@@ -35,8 +35,8 @@ export default function Home() {
             </Suspense>
           </div>
         </div>
-        <RentBuySection variant="buy" isDefaultOpen />
-        <RentBuySection variant="rent" />
+        <RentBuySection variant="buy" />
+        <RentBuySection variant="rent" isLazyRenderingEnabled={true} />
       </main>
     </div>
   );

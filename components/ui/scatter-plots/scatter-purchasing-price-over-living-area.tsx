@@ -12,7 +12,7 @@ export function ScatterPurchasingPriceOverLivingArea({ variant }: { variant: Var
   const { data, error, isPending } = trpc.getScatterData.useQuery({ ...filters, variant });
 
   if (isPending) {
-    return <div>Loading...</div>;
+    return <div className="aspect-square w-full">Loading...</div>;
   }
 
   if (error) {

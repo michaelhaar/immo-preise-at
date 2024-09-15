@@ -19,7 +19,7 @@ export function HistogramPurchasingPrice({ variant }: { variant: Variant }) {
   });
 
   if (isPending) {
-    return <div>Loading...</div>;
+    return <div className="aspect-square w-full">Loading...</div>;
   }
 
   if (error) {
