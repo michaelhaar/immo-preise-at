@@ -7,10 +7,7 @@ import ScatterPlot from './scatter-plot';
 export function ScatterPurchasingPriceOverLivingArea() {
   const filters = useFiltersFromSearchParamsState();
 
-  const { data, error, isPending } = trpc.getScatterData.useQuery({
-    fromDate: filters.fromDate,
-    toDate: filters.toDate,
-  });
+  const { data, error, isPending } = trpc.getScatterData.useQuery(filters);
 
   if (isPending) {
     return <div>Loading...</div>;

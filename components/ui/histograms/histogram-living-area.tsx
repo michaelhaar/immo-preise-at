@@ -12,8 +12,7 @@ export function HistogramLivingArea() {
     targetColumnIndex: 1,
     binWidth: 15,
     upperLimit: 120,
-    fromDate: filters.fromDate,
-    toDate: filters.toDate,
+    ...filters,
   });
 
   if (isPending) {

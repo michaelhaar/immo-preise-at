@@ -1,6 +1,6 @@
 import { getDbClient } from '@/lib/db-client';
 import { baseProcedure } from '@/lib/trpc/init';
-import { getRequiredEnvVar } from '@/lib/utils';
+import { getRequiredEnvVar, transformNamedArgsToPositionalArgs } from '@/lib/utils';
 import { z } from 'zod';
 
 const supportedTargetColumns = ['purchasingPrice', 'livingArea'];
@@ -14,6 +14,7 @@ export const getHistogramData = baseProcedure
         .max(supportedTargetColumns.length - 1),
       binWidth: z.number(),
       upperLimit: z.number(),
+      postalCodes: z.array(z.string()),
       fromDate: z.string(),
       toDate: z.string(),
     }),
@@ -27,50 +28,54 @@ export const getHistogramData = baseProcedure
     ),
   )
   .query(async (opts) => {
-    const { targetColumnIndex, binWidth, upperLimit, fromDate, toDate } = opts.input;
+    const { targetColumnIndex, binWidth, upperLimit, postalCodes, fromDate, toDate } = opts.input;
     const targetColumn = supportedTargetColumns[targetColumnIndex];
 
     // see: https://popsql.com/sql-templates/analytics/how-to-create-histograms-in-sql
-    const { rows } = await getDbClient().execute({
-      sql: `
-      WITH bins AS (
-        SELECT 
-          CASE
-            WHEN ${targetColumn} >= (:upperLimit) THEN (:upperLimit)
-            ELSE floor(${targetColumn} * 1.0 / (:binWidth)) * (:binWidth)
-          END AS binFloor,
-          count(id) AS count
-        FROM 
-          tackedRealEstateListings
-        WHERE 
-          userId = (:userId)
-        AND 
-          projectName = (:projectName)
-        AND
-          ${targetColumn} IS NOT NULL
-        AND
-          createdAt >= (:fromDate)
-        AND
-          createdAt <= (:toDate)
-        GROUP BY 1
-        ORDER BY 1
-      )
+    const { rows } = await getDbClient().execute(
+      transformNamedArgsToPositionalArgs({
+        sql: `
+          WITH bins AS (
+            SELECT 
+              CASE
+                WHEN ${targetColumn} >= (:upperLimit) THEN (:upperLimit)
+                ELSE floor(${targetColumn} * 1.0 / (:binWidth)) * (:binWidth)
+              END AS binFloor,
+              count(id) AS count
+            FROM 
+              tackedRealEstateListings
+            WHERE 
+              userId = (:userId)
+            AND 
+              projectName = (:projectName)
+            ${postalCodes.length ? 'AND postalCode IN (:postalCodes)' : ''}
+            AND
+              ${targetColumn} IS NOT NULL
+            AND
+              createdAt >= (:fromDate)
+            AND
+              createdAt <= (:toDate)
+            GROUP BY 1
+            ORDER BY 1
+          )
 
-      SELECT 
-        binFloor,
-        count
-      FROM bins
-      ORDER BY 1;
-    `,
-      args: {
-        userId: getRequiredEnvVar('USER_ID'),
-        projectName: getRequiredEnvVar('PROJECT_NAME'),
-        binWidth,
-        upperLimit,
-        fromDate,
-        toDate,
-      },
-    });
+          SELECT 
+            binFloor,
+            count
+          FROM bins
+          ORDER BY 1;
+        `,
+        args: {
+          userId: getRequiredEnvVar('USER_ID'),
+          projectName: getRequiredEnvVar('PROJECT_NAME'),
+          binWidth,
+          upperLimit,
+          postalCodes,
+          fromDate,
+          toDate,
+        },
+      }),
+    );
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return rows as any;

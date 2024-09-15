@@ -12,8 +12,7 @@ export function HistogramPurchasingPrice() {
     targetColumnIndex: 0,
     binWidth: 100000,
     upperLimit: 700000,
-    fromDate: filters.fromDate,
-    toDate: filters.toDate,
+    ...filters,
   });
 
   if (isPending) {
