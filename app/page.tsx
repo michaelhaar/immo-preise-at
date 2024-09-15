@@ -26,17 +26,17 @@ export default function Home() {
             um dir einen Überblick über den Immobilienmarkt zu geben.
           </p>
         </div>
-        <div>
-          <div className="font-bold">Welche Region interessiert dich?</div>
-          <div className="mt-4 flex gap-4">
-            <Suspense>
+        <Suspense>
+          <div>
+            <div className="font-bold">Welche Region interessiert dich?</div>
+            <div className="mt-4 flex gap-4">
               <FilterPostalCode />
               <FilterDateRange />
-            </Suspense>
+            </div>
           </div>
-        </div>
-        <RentBuySection variant="buy" />
-        <RentBuySection variant="rent" isLazyRenderingEnabled={true} />
+          <RentBuySection variant="buy" />
+          <RentBuySection variant="rent" isLazyRenderingEnabled={true} />
+        </Suspense>
       </main>
     </div>
   );
