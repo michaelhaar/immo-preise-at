@@ -8,7 +8,7 @@ import { z } from 'zod';
 const searchParamsSchema = z.object({
   postalCodes: z
     .string()
-    .regex(/[0-9 ]/)
+    .regex(/[0-9, ]/)
     .catch(''),
   dateRange: z.enum(dateRangeOptions).catch(defaultDateRangeOption),
 });
@@ -64,7 +64,7 @@ export function useFiltersFromSearchParamsState() {
   }
 
   return {
-    postalCodes: searchParams.postalCodes.split(' ').filter(Boolean),
+    postalCodes: searchParams.postalCodes.replace(',', ' ').split(' ').filter(Boolean),
     fromDate: fromDate.toISOString(),
     toDate: toDate.toISOString(),
   };
