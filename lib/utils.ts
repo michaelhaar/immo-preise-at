@@ -80,8 +80,5 @@ export function transformNamedArgsToPositionalArgs({
     return '?';
   });
 
-  console.log('transformedSql', transformedSql);
-  console.log('positionalArgs', positionalArgs);
-
   return { sql: transformedSql, args: positionalArgs };
 }
