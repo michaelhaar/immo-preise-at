@@ -29,22 +29,29 @@ export default function Home() {
             um dir einen Überblick über den Immobilienmarkt zu geben.
           </p>
         </div>
-        <Suspense>
-          <div>
-            <div className="font-bold">Welche Region interessiert dich?</div>
-            <div className="mt-4 flex gap-4">
+        <div>
+          <div className="font-bold">Welche Region interessiert dich?</div>
+          <div className="mt-4 flex gap-4">
+            <Suspense>
               <FilterPostalCode />
               <FilterDateRange />
-            </div>
+            </Suspense>
           </div>
-          <h1 className="text-2xl font-bold sm:text-3xl">Preise Eigentumswohnungen</h1>
-          <div className="flex w-full flex-col items-center gap-8">
-            <KeyPerformanceIndicators />
-            <ScatterPurchasingPriceOverLivingArea />
-            <HistogramPurchasingPrice />
-            <HistogramLivingArea />
-          </div>
-        </Suspense>
+        </div>
+        <h1 className="text-2xl font-bold sm:text-3xl">Preise Eigentumswohnungen</h1>
+        <div className="flex w-full flex-col items-center gap-8">
+          <KeyPerformanceIndicators variant="buy" />
+          <ScatterPurchasingPriceOverLivingArea variant="buy" />
+          <HistogramPurchasingPrice variant="buy" />
+          <HistogramLivingArea variant="buy" />
+        </div>
+        <h1 className="text-2xl font-bold sm:text-3xl">Preise Mietwohnungen</h1>
+        <div className="flex w-full flex-col items-center gap-8">
+          <KeyPerformanceIndicators variant="rent" />
+          <ScatterPurchasingPriceOverLivingArea variant="rent" />
+          <HistogramPurchasingPrice variant="rent" />
+          <HistogramLivingArea variant="rent" />
+        </div>
       </main>
     </div>
   );

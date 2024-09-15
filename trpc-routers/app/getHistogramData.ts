@@ -3,11 +3,12 @@ import { baseProcedure } from '@/lib/trpc/init';
 import { getRequiredEnvVar, transformNamedArgsToPositionalArgs } from '@/lib/utils';
 import { z } from 'zod';
 
-const supportedTargetColumns = ['purchasingPrice', 'livingArea'];
+const supportedTargetColumns = ['purchasingPrice', 'livingArea', 'rent'];
 
 export const getHistogramData = baseProcedure
   .input(
     z.object({
+      variant: z.enum(['buy', 'rent']),
       targetColumnIndex: z
         .number()
         .min(0)
@@ -28,7 +29,7 @@ export const getHistogramData = baseProcedure
     ),
   )
   .query(async (opts) => {
-    const { targetColumnIndex, binWidth, upperLimit, postalCodes, fromDate, toDate } = opts.input;
+    const { variant, targetColumnIndex, binWidth, upperLimit, postalCodes, fromDate, toDate } = opts.input;
     const targetColumn = supportedTargetColumns[targetColumnIndex];
 
     // see: https://popsql.com/sql-templates/analytics/how-to-create-histograms-in-sql
@@ -55,6 +56,8 @@ export const getHistogramData = baseProcedure
               createdAt >= (:fromDate)
             AND
               createdAt <= (:toDate)
+            AND
+              ${variant === 'buy' ? 'purchasingPrice' : 'rent'} IS NOT NULL
             GROUP BY 1
             ORDER BY 1
           )

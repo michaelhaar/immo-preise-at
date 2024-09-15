@@ -5,13 +5,16 @@ import { trpc } from '@/lib/trpc/client';
 import { Histogram, HistogramData } from './histogram';
 import { getFormattedPercentage, getTotalCount } from './utils';
 
-export function HistogramLivingArea() {
+type Variant = 'buy' | 'rent';
+
+export function HistogramLivingArea({ variant }: { variant: Variant }) {
   const filters = useFiltersFromSearchParamsState();
 
   const { data, error, isPending } = trpc.getHistogramData.useQuery({
     targetColumnIndex: 1,
     binWidth: 15,
     upperLimit: 120,
+    variant,
     ...filters,
   });
 

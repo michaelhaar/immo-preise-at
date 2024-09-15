@@ -5,13 +5,16 @@ import { trpc } from '@/lib/trpc/client';
 import { Histogram, HistogramData } from './histogram';
 import { getFormattedPercentage, getTotalCount } from './utils';
 
-export function HistogramPurchasingPrice() {
+type Variant = 'buy' | 'rent';
+
+export function HistogramPurchasingPrice({ variant }: { variant: Variant }) {
   const filters = useFiltersFromSearchParamsState();
 
   const { data, error, isPending } = trpc.getHistogramData.useQuery({
-    targetColumnIndex: 0,
-    binWidth: 100000,
-    upperLimit: 700000,
+    targetColumnIndex: variant === 'buy' ? 0 : 2,
+    variant,
+    binWidth: binWidthByVariant[variant],
+    upperLimit: upperLimitByVariant[variant],
     ...filters,
   });
 
@@ -28,16 +31,31 @@ export function HistogramPurchasingPrice() {
     if (index === data.length - 1) {
       return {
         ...row,
-        binLabel: `>${row.binFloor / 1000}k`,
+        binLabel: `>${transformerByVariant[variant](row.binFloor)}`,
         label: getFormattedPercentage(totalCount, row.count),
       };
     }
     return {
       ...row,
-      binLabel: `${row.binFloor / 1000}k`,
+      binLabel: `${transformerByVariant[variant](row.binFloor)}`,
       label: getFormattedPercentage(totalCount, row.count),
     };
   });
 
   return <Histogram chartData={chartData} />;
 }
+
+const transformerByVariant: Record<Variant, (number: number) => string> = {
+  buy: (x) => `${x / 1000}k`,
+  rent: (x) => `${x}€`,
+};
+
+const binWidthByVariant: Record<Variant, number> = {
+  buy: 100000,
+  rent: 200,
+};
+
+const upperLimitByVariant: Record<Variant, number> = {
+  buy: 700000,
+  rent: 1600,
+};

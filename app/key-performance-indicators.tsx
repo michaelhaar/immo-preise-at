@@ -4,10 +4,12 @@ import { useFiltersFromSearchParamsState } from '@/hooks/use-search-params-state
 import { trpc } from '@/lib/trpc/client';
 import { formatNumber } from '@/lib/utils';
 
-export function KeyPerformanceIndicators() {
+type Variant = 'buy' | 'rent';
+
+export function KeyPerformanceIndicators({ variant }: { variant: Variant }) {
   const filters = useFiltersFromSearchParamsState();
 
-  const { data, isPending, error } = trpc.getKeyPerformanceIndicatorData.useQuery(filters);
+  const { data, isPending, error } = trpc.getKeyPerformanceIndicatorData.useQuery({ ...filters, variant });
 
   if (isPending) {
     return <div>Loading...</div>;
@@ -25,18 +27,12 @@ export function KeyPerformanceIndicators() {
         left="Durchschn. Größe"
         right={formatNumber(data.averageLivingArea, { decimalPlaces: 0, unit: 'm²' })}
       />
-      <DataPair left="Median Preis" right={formatNumber(data.medianPurchasingPrice, { decimalPlaces: 0, unit: '€' })} />
-      <DataPair
-        left="Durchschn. Preis"
-        right={formatNumber(data.averagePurchasingPrice, { decimalPlaces: 0, unit: '€' })}
-      />
-      <DataPair
-        left="Median €/m²"
-        right={formatNumber(data.medianPurchasingPricePerM2, { decimalPlaces: 0, unit: '€/m²' })}
-      />
+      <DataPair left="Median Preis" right={formatNumber(data.medianPrice, { decimalPlaces: 0, unit: '€' })} />
+      <DataPair left="Durchschn. Preis" right={formatNumber(data.averagePrice, { decimalPlaces: 0, unit: '€' })} />
+      <DataPair left="Median €/m²" right={formatNumber(data.medianPricePerM2, { decimalPlaces: 0, unit: '€/m²' })} />
       <DataPair
         left="Durchschn. €/m²"
-        right={formatNumber(data.averagePurchasingPricePerM2, { decimalPlaces: 0, unit: '€/m²' })}
+        right={formatNumber(data.averagePricePerM2, { decimalPlaces: 0, unit: '€/m²' })}
       />
     </div>
   );
