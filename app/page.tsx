@@ -1,11 +1,8 @@
 import { FilterDateRange } from '@/components/ui/filters/filter-date-range';
 import { FilterPostalCode } from '@/components/ui/filters/filter-postal-code';
-import { HistogramLivingArea } from '@/components/ui/histograms/histogram-living-area';
-import { HistogramPurchasingPrice } from '@/components/ui/histograms/histogram-purchasing-price';
-import { ScatterPurchasingPriceOverLivingArea } from '@/components/ui/scatter-plots/scatter-purchasing-price-over-living-area';
+import { RentBuySection } from '@/components/ui/rent-buy-section';
 import Link from 'next/link';
 import { Suspense } from 'react';
-import { KeyPerformanceIndicators } from './key-performance-indicators';
 
 export default function Home() {
   return (
@@ -38,20 +35,8 @@ export default function Home() {
             </Suspense>
           </div>
         </div>
-        <h1 className="text-2xl font-bold sm:text-3xl">Preise Eigentumswohnungen</h1>
-        <div className="flex w-full flex-col items-center gap-8">
-          <KeyPerformanceIndicators variant="buy" />
-          <ScatterPurchasingPriceOverLivingArea variant="buy" />
-          <HistogramPurchasingPrice variant="buy" />
-          <HistogramLivingArea variant="buy" />
-        </div>
-        <h1 className="text-2xl font-bold sm:text-3xl">Preise Mietwohnungen</h1>
-        <div className="flex w-full flex-col items-center gap-8">
-          <KeyPerformanceIndicators variant="rent" />
-          <ScatterPurchasingPriceOverLivingArea variant="rent" />
-          <HistogramPurchasingPrice variant="rent" />
-          <HistogramLivingArea variant="rent" />
-        </div>
+        <RentBuySection variant="buy" isDefaultOpen />
+        <RentBuySection variant="rent" />
       </main>
     </div>
   );
