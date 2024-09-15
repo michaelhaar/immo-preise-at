@@ -7,10 +7,7 @@ import { formatNumber } from '@/lib/utils';
 export function KeyPerformanceIndicators() {
   const filters = useFiltersFromSearchParamsState();
 
-  const { data, isPending, error } = trpc.getKeyPerformanceIndicatorData.useQuery({
-    fromDate: filters.fromDate,
-    toDate: filters.toDate,
-  });
+  const { data, isPending, error } = trpc.getKeyPerformanceIndicatorData.useQuery(filters);
 
   if (isPending) {
     return <div>Loading...</div>;
