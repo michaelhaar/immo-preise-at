@@ -29,7 +29,7 @@ const defaultFormatNumberOptions: FormatNumberOptions = {
 
 export function formatNumber(number: number | null, optionOverrides?: FormatNumberOptions): string {
   if (number === null) {
-    return '';
+    return '-';
   }
 
   const options = { ...defaultFormatNumberOptions, ...optionOverrides };

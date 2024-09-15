@@ -12,9 +12,12 @@ export type ScatterData = DataPoint[];
 
 type Props = {
   data: ScatterData;
+  xTicks?: number[];
+  yTicks?: number[];
+  unit?: string;
 };
 
-export default function ScatterPlot({ data }: Props) {
+export default function ScatterPlot({ data, xTicks, yTicks, unit }: Props) {
   return (
     <ChartContainer config={{}}>
       <ScatterChart
@@ -33,7 +36,8 @@ export default function ScatterPlot({ data }: Props) {
           name="X Axis"
           unit="m²"
           className="text-[8px]"
-          domain={[0, 200]}
+          ticks={xTicks}
+          domain={xTicks ? [xTicks[0], xTicks[xTicks.length - 1]] : undefined}
           allowDataOverflow
           axisLine={false}
         />
@@ -42,9 +46,10 @@ export default function ScatterPlot({ data }: Props) {
           type="number"
           dataKey="y"
           name="Y Axis"
-          unit="k"
+          unit={unit}
           className="text-[8px]"
-          domain={[0, 1000]}
+          ticks={yTicks}
+          domain={yTicks ? [yTicks[0], yTicks[yTicks.length - 1]] : undefined}
           allowDataOverflow
           axisLine={false}
         />

@@ -6,6 +6,7 @@ import { z } from 'zod';
 export const getKeyPerformanceIndicatorData = baseProcedure
   .input(
     z.object({
+      variant: z.enum(['buy', 'rent']),
       postalCodes: z.array(z.string()),
       fromDate: z.string(),
       toDate: z.string(),
@@ -14,16 +15,19 @@ export const getKeyPerformanceIndicatorData = baseProcedure
   .output(
     z.object({
       numberOfListings: z.number(),
-      medianLivingArea: z.number(),
-      averageLivingArea: z.number(),
-      medianPurchasingPrice: z.number(),
-      averagePurchasingPrice: z.number(),
-      medianPurchasingPricePerM2: z.number(),
-      averagePurchasingPricePerM2: z.number(),
+      medianLivingArea: z.number().nullable(),
+      averageLivingArea: z.number().nullable(),
+      medianPrice: z.number().nullable(),
+      averagePrice: z.number().nullable(),
+      medianPricePerM2: z.number().nullable(),
+      averagePricePerM2: z.number().nullable(),
     }),
   )
   .query(async (opts) => {
-    const { postalCodes, fromDate, toDate } = opts.input;
+    const { variant, postalCodes, fromDate, toDate } = opts.input;
+
+    const priceColumn = variant === 'buy' ? 'purchasingPrice' : 'rent';
+    const pricePerM2Column = variant === 'buy' ? 'purchasingPricePerM2' : 'rentPerM2';
 
     // see: https://popsql.com/sql-templates/analytics/how-to-create-histograms-in-sql
     const { rows } = await getDbClient().execute(
@@ -33,10 +37,10 @@ export const getKeyPerformanceIndicatorData = baseProcedure
             COUNT(*) AS 'numberOfListings',
             MEDIAN(livingArea) AS 'medianLivingArea',
             AVG(livingArea) AS 'averageLivingArea',
-            MEDIAN(purchasingPrice) AS 'medianPurchasingPrice',
-            AVG(purchasingPrice) AS 'averagePurchasingPrice',
-            MEDIAN(purchasingPricePerM2) AS 'medianPurchasingPricePerM2',
-            AVG(purchasingPricePerM2) AS 'averagePurchasingPricePerM2'
+            MEDIAN(${priceColumn}) AS 'medianPrice',
+            AVG(${priceColumn}) AS 'averagePrice',
+            MEDIAN(${pricePerM2Column}) AS 'medianPricePerM2',
+            AVG(${pricePerM2Column}) AS 'averagePricePerM2'
           FROM
             tackedRealEstateListings
           WHERE
@@ -47,8 +51,10 @@ export const getKeyPerformanceIndicatorData = baseProcedure
           AND
             createdAt >= (:fromDate)
           AND
-            createdAt <= (:toDate);
-        `,
+            createdAt <= (:toDate)
+          AND
+            ${priceColumn} IS NOT NULL
+        ;`,
         args: {
           userId: getRequiredEnvVar('USER_ID'),
           projectName: getRequiredEnvVar('PROJECT_NAME'),

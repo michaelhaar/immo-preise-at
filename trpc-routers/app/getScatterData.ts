@@ -6,6 +6,7 @@ import { z } from 'zod';
 export const getScatterData = baseProcedure
   .input(
     z.object({
+      variant: z.enum(['buy', 'rent']),
       postalCodes: z.array(z.string()),
       fromDate: z.string(),
       toDate: z.string(),
@@ -20,14 +21,14 @@ export const getScatterData = baseProcedure
     ),
   )
   .query(async (opts) => {
-    const { postalCodes, fromDate, toDate } = opts.input;
+    const { variant, postalCodes, fromDate, toDate } = opts.input;
 
     // see: https://popsql.com/sql-templates/analytics/how-to-create-histograms-in-sql
     const { rows } = await getDbClient().execute(
       transformNamedArgsToPositionalArgs({
         sql: `
           SELECT 
-            purchasingPrice / 1000 AS y,
+            ${variant === 'buy' ? 'purchasingPrice / 1000' : 'rent'} AS y,
             livingArea AS x
           FROM 
             tackedRealEstateListings
@@ -40,8 +41,10 @@ export const getScatterData = baseProcedure
             createdAt >= (:fromDate)
           AND
             createdAt <= (:toDate)
+          AND
+            ${variant === 'buy' ? 'purchasingPrice' : 'rent'} IS NOT NULL
           ORDER BY
-            lastSeenAt DESC
+            createdAt DESC
           LIMIT 5000
         `,
         args: {
