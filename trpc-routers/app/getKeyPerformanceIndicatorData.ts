@@ -65,8 +65,6 @@ export const getKeyPerformanceIndicatorData = baseProcedure
       }),
     );
 
-    console.log('rows', rows);
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return rows[0] as any;
   });
