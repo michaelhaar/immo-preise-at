@@ -16,15 +16,21 @@ import { SetStateAction, useCallback, useRef, useState } from 'react';
 
 export type Option = Record<'value' | 'label', string>;
 
-type Props = {
-  selectedValue: Option[];
-  onSelectedValueChange: (value: SetStateAction<Option[]>) => void;
-  options: Option[];
+type Props<T extends Option> = {
+  selectedValue: NoInfer<T>[];
+  onSelectedValueChange: (value: SetStateAction<NoInfer<T>[]>) => void;
+  options: T[];
   emptyMessage?: string;
   placeholder?: string;
 };
 
-export function FancyMultiSelect({ selectedValue, onSelectedValueChange, options, emptyMessage, placeholder }: Props) {
+export function FancyMultiSelect<T extends Option>({
+  selectedValue,
+  onSelectedValueChange,
+  options,
+  emptyMessage,
+  placeholder,
+}: Props<T>) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState<string>('');
@@ -96,22 +102,22 @@ export function FancyMultiSelect({ selectedValue, onSelectedValueChange, options
         <CommandList>
           {open && selectables.length > 0 ? (
             <div className="absolute top-0 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
-              <CommandGroup className="h-full overflow-auto">
-                {selectables.map((framework) => {
+              <CommandGroup className="h-96 overflow-auto">
+                {selectables.map((option) => {
                   return (
                     <CommandItem
-                      key={framework.value}
+                      key={option.value}
                       onMouseDown={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
                       }}
                       onSelect={() => {
                         setInputValue('');
-                        onSelectedValueChange((prev) => [...prev, framework]);
+                        onSelectedValueChange((prev) => [...prev, option]);
                       }}
                       className={'cursor-pointer'}
                     >
-                      {framework.label}
+                      {option.label}
                     </CommandItem>
                   );
                 })}
