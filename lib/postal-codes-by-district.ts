@@ -347,14 +347,28 @@ export const postalCodesByDistrict: Record<string, number[]> = {
 };
 
 export const allDistricts = Object.keys(postalCodesByDistrict).sort();
-export const allPostalCodes = Array.from(new Set(Object.values(postalCodesByDistrict).flat()))
-  .sort()
-  .map(String);
-
 export function isDistrict(district: string): boolean {
   return allDistricts.includes(district);
 }
 
+export const allPostalCodes = Array.from(new Set(Object.values(postalCodesByDistrict).flat()))
+  .sort()
+  .map(String);
 export function isPostalCode(postalCode: string): boolean {
   return postalCode.match(/^\d{4}$/) !== null;
+}
+
+export const postalPrefixesByState: Record<string, string[]> = {
+  Wien: ['1'],
+  Niederösterreich: ['2', '3'],
+  Oberösterreich: ['4'],
+  Salzburg: ['5'],
+  'Tirol & Vorarlberg': ['6'],
+  Burgenland: ['7'],
+  Steiermark: ['8'],
+  Kärnten: ['9'],
+};
+export const allStates = Object.keys(postalPrefixesByState).sort();
+export function isState(state: string): boolean {
+  return allStates.includes(state);
 }

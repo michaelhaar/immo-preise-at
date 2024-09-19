@@ -1,10 +1,11 @@
 'use client';
 
 import { useRegionsSearchParamsState } from '@/hooks/use-regions-search-params-state';
-import { allDistricts, allPostalCodes } from '@/lib/postal-codes-by-district';
+import { allDistricts, allPostalCodes, allStates } from '@/lib/postal-codes-by-district';
 import { FancyMultiSelect } from '../fancy-multi-select';
 
-const options = [...allDistricts, ...allPostalCodes];
+const statesAndDistricts = [...allStates, ...allDistricts].sort();
+const options = [...statesAndDistricts, ...allPostalCodes];
 
 export function FilterRegions() {
   const [regions, setRegions] = useRegionsSearchParamsState();
@@ -15,7 +16,7 @@ export function FilterRegions() {
       onSelectedOptionsChange={setRegions}
       options={options}
       emptyMessage="Keine Ergebnisse gefunden"
-      placeholder="Bezirk oder PLZ"
+      placeholder="Bundesland, Bezirk oder PLZ"
     />
   );
 }

@@ -1,5 +1,11 @@
 import { DateRangeOption } from '@/lib/constants';
-import { isDistrict, isPostalCode, postalCodesByDistrict } from '@/lib/postal-codes-by-district';
+import {
+  isDistrict,
+  isPostalCode,
+  isState,
+  postalCodesByDistrict,
+  postalPrefixesByState,
+} from '@/lib/postal-codes-by-district';
 import { useMemo } from 'react';
 import { useDateRangeSearchParamsState } from './use-date-range-search-params-state';
 import { useRegionsSearchParamsState } from './use-regions-search-params-state';
@@ -9,11 +15,12 @@ export function useFiltersFromSearchParamsState() {
   const [_dateRange, _setDateRange, parsedDateRange] = useDateRangeSearchParamsState();
 
   const regionsJson = JSON.stringify(parsedRegions);
-  const postalCodes = useMemo(() => getPostalCodes(JSON.parse(regionsJson)), [regionsJson]);
+  const { postalCodes, postalCodePrefixes } = useMemo(() => getPostalCodes(JSON.parse(regionsJson)), [regionsJson]);
   const { fromDate, toDate } = useMemo(() => calculateDateRange(parsedDateRange), [parsedDateRange]);
 
   return {
     postalCodes,
+    postalCodePrefixes,
     fromDate: fromDate.toISOString(),
     toDate: toDate.toISOString(),
   };
@@ -52,6 +59,7 @@ function calculateDateRange(parsedDateRange: DateRangeOption) {
 
 function getPostalCodes(regions: string[]) {
   const postalCodes = new Set<string>();
+  const postalCodePrefixes: string[] = [];
 
   regions.forEach((region) => {
     if (isPostalCode(region)) {
@@ -63,7 +71,16 @@ function getPostalCodes(regions: string[]) {
         postalCodes.add(`${postalCode}`);
       });
     }
+
+    if (isState(region)) {
+      postalPrefixesByState[region].forEach((prefix) => {
+        postalCodePrefixes.push(prefix);
+      });
+    }
   });
 
-  return Array.from(postalCodes);
+  return {
+    postalCodes: Array.from(postalCodes),
+    postalCodePrefixes,
+  };
 }
