@@ -56,6 +56,6 @@ const binWidthByVariant: Record<Variant, number> = {
 };
 
 const upperLimitByVariant: Record<Variant, number> = {
-  buy: 700000,
+  buy: 900000,
   rent: 1600,
 };
