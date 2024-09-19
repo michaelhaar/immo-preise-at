@@ -21,18 +21,18 @@ export function useSearchParamsState<T>({
   const parsedValue = parser(searchParams.get(name));
   const [value, setValueInternal] = useState(parsedValue);
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const pushSearchParamsRef = useRef(() => {});
+  const updateSearchParamsRef = useRef(() => {});
 
-  pushSearchParamsRef.current = () => {
+  updateSearchParamsRef.current = () => {
     const params = new URLSearchParams(searchParams.toString());
     params.set(name, serializer(value));
-    router.push(pathname + '?' + params.toString());
+    router.replace(pathname + '?' + params.toString(), { scroll: false });
   };
 
   const setValue = (newValue: SetStateAction<T>) => {
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
-      pushSearchParamsRef.current();
+      updateSearchParamsRef.current();
     }, debounceInMs);
 
     setValueInternal(newValue);
