@@ -350,3 +350,11 @@ export const allDistricts = Object.keys(postalCodesByDistrict).sort();
 export const allPostalCodes = Array.from(new Set(Object.values(postalCodesByDistrict).flat()))
   .sort()
   .map(String);
+
+export function isDistrict(district: string): boolean {
+  return allDistricts.includes(district);
+}
+
+export function isPostalCode(postalCode: string): boolean {
+  return postalCode.match(/^\d{4}$/) !== null;
+}

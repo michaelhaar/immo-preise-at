@@ -18,7 +18,8 @@ export function useSearchParamsState<T>({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const [value, setValueInternal] = useState(parser(searchParams.get(name)));
+  const parsedValue = parser(searchParams.get(name));
+  const [value, setValueInternal] = useState(parsedValue);
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const pushSearchParamsRef = useRef(() => {});
 
@@ -37,7 +38,7 @@ export function useSearchParamsState<T>({
     setValueInternal(newValue);
   };
 
-  return [value, setValue] as const;
+  return [value, setValue, parsedValue] as const;
 }
 
 export function stringSerializer(value: string) {
