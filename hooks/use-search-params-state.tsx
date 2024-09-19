@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { SetStateAction, useCallback, useRef, useState } from 'react';
+import { SetStateAction, useRef, useState } from 'react';
 
 export function useSearchParamsState<T>({
   name,
@@ -10,7 +10,7 @@ export function useSearchParamsState<T>({
   debounceInMs,
 }: {
   name: string;
-  parser: (strValueFromSearchParams: string) => T;
+  parser: (strValueFromSearchParams: string | null) => T;
   serializer: (value: T) => string;
   debounceInMs: number;
 }) {
@@ -18,19 +18,20 @@ export function useSearchParamsState<T>({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const [value, setValueInternal] = useState(parser(searchParams.get(name) ?? ''));
+  const [value, setValueInternal] = useState(parser(searchParams.get(name)));
   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const pushSearchParamsRef = useRef(() => {});
 
-  const pushSearchParams = useCallback(() => {
+  pushSearchParamsRef.current = () => {
     const params = new URLSearchParams(searchParams.toString());
     params.set(name, serializer(value));
     router.push(pathname + '?' + params.toString());
-  }, [searchParams, value, router, pathname, serializer, name]);
+  };
 
   const setValue = (newValue: SetStateAction<T>) => {
     clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
-      pushSearchParams();
+      pushSearchParamsRef.current();
     }, debounceInMs);
 
     setValueInternal(newValue);
@@ -43,14 +44,14 @@ export function stringSerializer(value: string) {
   return encodeURI(value);
 }
 
-export function stringParser(value: string) {
-  return decodeURI(value);
+export function stringParser(value: string | null) {
+  return value ? decodeURI(value) : '';
 }
 
 export function stringArraySerializer(values: string[]) {
   return values.map(stringSerializer).join('+');
 }
 
-export function stringArrayParser(value: string) {
-  return value.split('+').map(stringParser);
+export function stringArrayParser(value: string | null) {
+  return value ? value.split('+').map(stringParser) : [];
 }
