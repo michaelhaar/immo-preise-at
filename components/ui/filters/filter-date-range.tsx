@@ -9,22 +9,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useSearchParamsState } from '@/hooks/use-search-params-state';
+import { useDateRangeSearchParamsState } from '@/hooks/use-date-range-search-params-state';
 import { dateRangeOptions, defaultDateRangeOption } from '@/lib/constants';
 import { isDateRangeOption } from '@/lib/utils';
 
 export function FilterDateRange() {
-  const [searchParamsState, setSearchParamsState] = useSearchParamsState();
+  const [dateRange, setDateRange] = useDateRangeSearchParamsState();
 
   function handleChange(newDateRange: string) {
-    setSearchParamsState({
-      ...searchParamsState,
-      dateRange: isDateRangeOption(newDateRange) ? newDateRange : defaultDateRangeOption,
-    });
+    setDateRange(isDateRangeOption(newDateRange) ? newDateRange : defaultDateRangeOption);
   }
 
   return (
-    <Select value={searchParamsState.dateRange} onValueChange={handleChange}>
+    <Select value={dateRange} onValueChange={handleChange}>
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="Zeitraum auswählen" />
       </SelectTrigger>
