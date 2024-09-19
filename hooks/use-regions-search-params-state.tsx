@@ -4,7 +4,7 @@ import { stringArrayParser, stringArraySerializer, useSearchParamsState } from '
 
 export function useRegionsSearchParamsState() {
   return useSearchParamsState({
-    name: 'regions',
+    name: 'region',
     parser: stringArrayParser,
     serializer: stringArraySerializer,
     debounceInMs: 1000,
