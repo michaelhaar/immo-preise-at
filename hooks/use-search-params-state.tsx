@@ -1,71 +1,58 @@
 'use client';
 
-import { dateRangeOptions, defaultDateRangeOption } from '@/lib/constants';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback } from 'react';
-import { z } from 'zod';
+import { SetStateAction, useRef, useState } from 'react';
 
-const searchParamsSchema = z.object({
-  postalCodes: z
-    .string()
-    .regex(/[0-9, ]/)
-    .catch(''),
-  dateRange: z.enum(dateRangeOptions).catch(defaultDateRangeOption),
-});
-type SearchParamsState = z.infer<typeof searchParamsSchema>;
-
-export function useSearchParamsState() {
+export function useSearchParamsState<T>({
+  name,
+  parser,
+  serializer,
+  debounceInMs,
+}: {
+  name: string;
+  parser: (strValueFromSearchParams: string | null) => T;
+  serializer: (value: T) => string;
+  debounceInMs: number;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const unsafeSearchParamsObj = Object.fromEntries(searchParams.entries());
-  const searchParamsObj = searchParamsSchema.parse(unsafeSearchParamsObj);
+  const parsedValue = parser(searchParams.get(name));
+  const [value, setValueInternal] = useState(parsedValue);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const updateSearchParamsRef = useRef(() => {});
 
-  const setSearchParamsObj = useCallback(
-    (newSearchParamsObj: SearchParamsState) => {
-      const newQueryString = new URLSearchParams(newSearchParamsObj).toString();
-      router.push(pathname + '?' + newQueryString);
-    },
-    [router, pathname],
-  );
+  updateSearchParamsRef.current = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set(name, serializer(value));
+    router.replace(pathname + '?' + params.toString(), { scroll: false });
+  };
 
-  return [searchParamsObj, setSearchParamsObj] as const;
+  const setValue = (newValue: SetStateAction<T>) => {
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
+      updateSearchParamsRef.current();
+    }, debounceInMs);
+
+    setValueInternal(newValue);
+  };
+
+  return [value, setValue, parsedValue] as const;
 }
 
-export function useFiltersFromSearchParamsState() {
-  const [searchParams] = useSearchParamsState();
+export function stringSerializer(value: string) {
+  return encodeURI(value);
+}
 
-  const now = new Date();
-  const fromDate = new Date();
-  fromDate.setUTCHours(0, 0, 0, 0);
-  const toDate = new Date();
-  toDate.setUTCHours(23, 59, 59, 999);
+export function stringParser(value: string | null) {
+  return value ? decodeURI(value) : '';
+}
 
-  switch (searchParams.dateRange) {
-    case '7T':
-      fromDate.setDate(now.getDate() - 7);
-      break;
-    case '1M':
-      fromDate.setMonth(now.getMonth() - 1);
-      break;
-    case '3M':
-      fromDate.setMonth(now.getMonth() - 3);
-      break;
-    case '6M':
-      fromDate.setMonth(now.getMonth() - 6);
-      break;
-    case '1J':
-      fromDate.setFullYear(now.getFullYear() - 1);
-      break;
-    default:
-      const _exhaustiveCheck: never = searchParams.dateRange;
-      break;
-  }
+export function stringArraySerializer(values: string[]) {
+  return values.map(stringSerializer).join('+');
+}
 
-  return {
-    postalCodes: searchParams.postalCodes.replace(',', ' ').split(' ').filter(Boolean),
-    fromDate: fromDate.toISOString(),
-    toDate: toDate.toISOString(),
-  };
+export function stringArrayParser(value: string | null) {
+  return value ? value.split('+').map(stringParser) : [];
 }

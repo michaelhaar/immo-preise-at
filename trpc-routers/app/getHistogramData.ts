@@ -2,6 +2,7 @@ import { getDbClient } from '@/lib/db-client';
 import { baseProcedure } from '@/lib/trpc/init';
 import { getRequiredEnvVar, transformNamedArgsToPositionalArgs } from '@/lib/utils';
 import { z } from 'zod';
+import { getPostalCodeCondition } from './utils';
 
 const supportedTargetColumns = ['purchasingPrice', 'livingArea', 'rent'];
 
@@ -16,6 +17,7 @@ export const getHistogramData = baseProcedure
       binWidth: z.number(),
       upperLimit: z.number(),
       postalCodes: z.array(z.string()),
+      postalCodePrefixes: z.array(z.string()),
       fromDate: z.string(),
       toDate: z.string(),
     }),
@@ -29,8 +31,10 @@ export const getHistogramData = baseProcedure
     ),
   )
   .query(async (opts) => {
-    const { variant, targetColumnIndex, binWidth, upperLimit, postalCodes, fromDate, toDate } = opts.input;
+    const { variant, targetColumnIndex, binWidth, upperLimit, postalCodes, postalCodePrefixes, fromDate, toDate } =
+      opts.input;
     const targetColumn = supportedTargetColumns[targetColumnIndex];
+    const [postalCodeCondition, { postalCodesLike }] = getPostalCodeCondition({ postalCodes, postalCodePrefixes });
 
     // see: https://popsql.com/sql-templates/analytics/how-to-create-histograms-in-sql
     const { rows } = await getDbClient().execute(
@@ -49,7 +53,7 @@ export const getHistogramData = baseProcedure
               userId = (:userId)
             AND 
               projectName = (:projectName)
-            ${postalCodes.length ? 'AND postalCode IN (:postalCodes)' : ''}
+            ${postalCodeCondition}
             AND
               ${targetColumn} IS NOT NULL
             AND
@@ -74,6 +78,7 @@ export const getHistogramData = baseProcedure
           binWidth,
           upperLimit,
           postalCodes,
+          postalCodesLike,
           fromDate,
           toDate,
         },

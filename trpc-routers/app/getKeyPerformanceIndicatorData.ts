@@ -2,12 +2,14 @@ import { getDbClient } from '@/lib/db-client';
 import { baseProcedure } from '@/lib/trpc/init';
 import { getRequiredEnvVar, transformNamedArgsToPositionalArgs } from '@/lib/utils';
 import { z } from 'zod';
+import { getPostalCodeCondition } from './utils';
 
 export const getKeyPerformanceIndicatorData = baseProcedure
   .input(
     z.object({
       variant: z.enum(['buy', 'rent']),
       postalCodes: z.array(z.string()),
+      postalCodePrefixes: z.array(z.string()),
       fromDate: z.string(),
       toDate: z.string(),
     }),
@@ -24,10 +26,11 @@ export const getKeyPerformanceIndicatorData = baseProcedure
     }),
   )
   .query(async (opts) => {
-    const { variant, postalCodes, fromDate, toDate } = opts.input;
+    const { variant, postalCodes, postalCodePrefixes, fromDate, toDate } = opts.input;
 
     const priceColumn = variant === 'buy' ? 'purchasingPrice' : 'rent';
     const pricePerM2Column = variant === 'buy' ? 'purchasingPricePerM2' : 'rentPerM2';
+    const [postalCodeCondition, { postalCodesLike }] = getPostalCodeCondition({ postalCodes, postalCodePrefixes });
 
     // see: https://popsql.com/sql-templates/analytics/how-to-create-histograms-in-sql
     const { rows } = await getDbClient().execute(
@@ -47,7 +50,7 @@ export const getKeyPerformanceIndicatorData = baseProcedure
             userId = (:userId)
           AND 
             projectName = (:projectName)
-          ${postalCodes.length ? 'AND postalCode IN (:postalCodes)' : ''}
+          ${postalCodeCondition}
           AND
             createdAt >= (:fromDate)
           AND
@@ -61,6 +64,7 @@ export const getKeyPerformanceIndicatorData = baseProcedure
           fromDate,
           toDate,
           postalCodes,
+          postalCodesLike,
         },
       }),
     );

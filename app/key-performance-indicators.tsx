@@ -1,6 +1,6 @@
 'use client';
 
-import { useFiltersFromSearchParamsState } from '@/hooks/use-search-params-state';
+import { useFiltersFromSearchParamsState } from '@/hooks/use-filters-from-search-params-state';
 import { trpc } from '@/lib/trpc/client';
 import { formatNumber } from '@/lib/utils';
 

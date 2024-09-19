@@ -1,5 +1,4 @@
-import { FilterDateRange } from '@/components/ui/filters/filter-date-range';
-import { FilterPostalCode } from '@/components/ui/filters/filter-postal-code';
+import { FilterRegions } from '@/components/ui/filters/filter-regions';
 import { RentBuySection } from '@/components/ui/rent-buy-section';
 import Link from 'next/link';
 import { Suspense } from 'react';
@@ -30,8 +29,8 @@ export default function Home() {
           <div>
             <div className="font-bold">Welche Region interessiert dich?</div>
             <div className="mt-4 flex gap-4">
-              <FilterPostalCode />
-              <FilterDateRange />
+              <FilterRegions />
+              {/* <FilterDateRange /> */}
             </div>
           </div>
           <RentBuySection variant="buy" />
