@@ -33,6 +33,13 @@ export function FancyMultiSelect({
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState<string>('');
 
+  const handleInputValueChange = (inputValue: string) => {
+    if (!open) {
+      setOpen(true);
+    }
+    setInputValue(inputValue);
+  };
+
   const handleUnselect = useCallback((option: string) => {
     onSelectedOptionsChange((prev) => prev.filter((s) => s !== option));
   }, []);
@@ -88,7 +95,7 @@ export function FancyMultiSelect({
           <CommandPrimitive.Input
             ref={inputRef}
             value={inputValue}
-            onValueChange={setInputValue}
+            onValueChange={handleInputValueChange}
             onBlur={() => setOpen(false)}
             onFocus={() => setOpen(true)}
             placeholder={placeholder}
@@ -110,6 +117,7 @@ export function FancyMultiSelect({
                         e.stopPropagation();
                       }}
                       onSelect={() => {
+                        setOpen(false);
                         setInputValue('');
                         onSelectedOptionsChange((prev) => [...prev, option]);
                       }}
