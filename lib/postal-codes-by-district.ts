@@ -346,6 +346,7 @@ export const postalCodesByDistrict: Record<string, number[]> = {
   'Eisenstadt (Stadt)': [7000],
 };
 
-export const districts = Object.keys(postalCodesByDistrict).sort();
-
-export const postalCodes = Array.from(new Set(Object.values(postalCodesByDistrict).flat())).sort();
+export const allDistricts = Object.keys(postalCodesByDistrict).sort();
+export const allPostalCodes = Array.from(new Set(Object.values(postalCodesByDistrict).flat()))
+  .sort()
+  .map(String);
