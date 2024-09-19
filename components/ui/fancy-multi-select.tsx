@@ -14,29 +14,27 @@ import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@
 import { Command as CommandPrimitive } from 'cmdk';
 import { SetStateAction, useCallback, useRef, useState } from 'react';
 
-export type Option = Record<'value' | 'label', string>;
-
-type Props<T extends Option> = {
-  selectedValue: NoInfer<T>[];
-  onSelectedValueChange: (value: SetStateAction<NoInfer<T>[]>) => void;
-  options: T[];
+type Props = {
+  selectedOptions: string[];
+  onSelectedOptionsChange: (value: SetStateAction<string[]>) => void;
+  options: string[];
   emptyMessage?: string;
   placeholder?: string;
 };
 
-export function FancyMultiSelect<T extends Option>({
-  selectedValue,
-  onSelectedValueChange,
+export function FancyMultiSelect({
+  selectedOptions,
+  onSelectedOptionsChange,
   options,
   emptyMessage,
   placeholder,
-}: Props<T>) {
+}: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState<string>('');
 
-  const handleUnselect = useCallback((option: Option) => {
-    onSelectedValueChange((prev) => prev.filter((s) => s.value !== option.value));
+  const handleUnselect = useCallback((option: string) => {
+    onSelectedOptionsChange((prev) => prev.filter((s) => s !== option));
   }, []);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -44,7 +42,7 @@ export function FancyMultiSelect<T extends Option>({
     if (input) {
       if (e.key === 'Delete' || e.key === 'Backspace') {
         if (input.value === '') {
-          onSelectedValueChange((prev) => {
+          onSelectedOptionsChange((prev) => {
             const newSelected = [...prev];
             newSelected.pop();
             return newSelected;
@@ -58,16 +56,16 @@ export function FancyMultiSelect<T extends Option>({
     }
   }, []);
 
-  const selectables = options.filter((option) => !selectedValue.includes(option));
+  const selectables = options.filter((option) => !selectedOptions.includes(option));
 
   return (
     <Command onKeyDown={handleKeyDown} className="overflow-visible bg-transparent">
       <div className="group rounded-md border border-input px-3 py-2 text-sm ring-offset-background focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
         <div className="flex flex-wrap gap-1">
-          {selectedValue.map((option) => {
+          {selectedOptions.map((option) => {
             return (
-              <Badge key={option.value} variant="secondary">
-                {option.label}
+              <Badge key={option} variant="secondary">
+                {option}
                 <button
                   className="ml-1 rounded-full outline-none ring-offset-background focus:ring-2 focus:ring-ring focus:ring-offset-2"
                   onKeyDown={(e) => {
@@ -106,18 +104,18 @@ export function FancyMultiSelect<T extends Option>({
                 {selectables.map((option) => {
                   return (
                     <CommandItem
-                      key={option.value}
+                      key={option}
                       onMouseDown={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
                       }}
                       onSelect={() => {
                         setInputValue('');
-                        onSelectedValueChange((prev) => [...prev, option]);
+                        onSelectedOptionsChange((prev) => [...prev, option]);
                       }}
                       className={'cursor-pointer'}
                     >
-                      {option.label}
+                      {option}
                     </CommandItem>
                   );
                 })}
