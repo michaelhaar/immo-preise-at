@@ -17,8 +17,8 @@ export const getScatterData = baseProcedure
   .output(
     z.array(
       z.object({
-        x: z.number().nullable(),
-        y: z.number().nullable(),
+        x: z.number(),
+        y: z.number(),
       }),
     ),
   )
@@ -47,9 +47,11 @@ export const getScatterData = baseProcedure
             createdAt <= (:toDate)
           AND
             ${variant === 'buy' ? 'purchasingPrice' : 'rent'} IS NOT NULL
+          AND
+            livingArea IS NOT NULL
           ORDER BY
             createdAt DESC
-          LIMIT 1000
+          LIMIT 5000
         `,
         args: {
           userId: getRequiredEnvVar('USER_ID'),
