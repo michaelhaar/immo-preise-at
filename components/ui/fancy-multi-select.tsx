@@ -32,8 +32,12 @@ export function FancyMultiSelect({
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState<string>('');
+  const groupRef = useRef<HTMLDivElement>(null);
 
   const handleInputValueChange = (inputValue: string) => {
+    requestAnimationFrame(() => {
+      groupRef.current?.scrollTo({ top: 0 });
+    });
     if (!open) {
       setOpen(true);
     }
@@ -107,7 +111,7 @@ export function FancyMultiSelect({
         <CommandList>
           {open && selectables.length > 0 ? (
             <div className="absolute top-0 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
-              <CommandGroup className="h-96 overflow-auto">
+              <CommandGroup className="h-96 overflow-auto" ref={groupRef}>
                 {selectables.map((option) => {
                   return (
                     <CommandItem
