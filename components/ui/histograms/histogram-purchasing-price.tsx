@@ -11,7 +11,7 @@ type Variant = 'buy' | 'rent';
 export function HistogramPurchasingPrice({ variant }: { variant: Variant }) {
   const filters = useFiltersFromSearchParamsState();
 
-  const { data, error, isPending } = trpc.getHistogramData.useQuery({
+  const { data, error } = trpc.getHistogramData.useQuery({
     targetColumnIndex: variant === 'buy' ? 0 : 2,
     variant,
     binWidth: binWidthByVariant[variant],
@@ -19,7 +19,7 @@ export function HistogramPurchasingPrice({ variant }: { variant: Variant }) {
     ...filters,
   });
 
-  if (isPending) {
+  if (!data) {
     return <Skeleton className="aspect-square w-full" />;
   }
 

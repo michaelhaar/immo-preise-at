@@ -10,9 +10,9 @@ type Variant = 'buy' | 'rent';
 export function ScatterPurchasingPriceOverLivingArea({ variant }: { variant: Variant }) {
   const filters = useFiltersFromSearchParamsState();
 
-  const { data, error, isPending } = trpc.getScatterData.useQuery({ ...filters, variant });
+  const { data, error } = trpc.getScatterData.useQuery({ ...filters, variant });
 
-  if (isPending) {
+  if (!data) {
     return <Skeleton className="aspect-square w-full" />;
   }
 

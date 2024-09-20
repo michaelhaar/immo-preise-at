@@ -10,9 +10,9 @@ type Variant = 'buy' | 'rent';
 export function KeyPerformanceIndicators({ variant }: { variant: Variant }) {
   const filters = useFiltersFromSearchParamsState();
 
-  const { data, isPending, error } = trpc.getKeyPerformanceIndicatorData.useQuery({ ...filters, variant });
+  const { data, isPlaceholderData, error } = trpc.getKeyPerformanceIndicatorData.useQuery({ ...filters, variant });
 
-  if (isPending) {
+  if (!data) {
     return (
       <div className="w-full max-w-96">
         {[...Array(6)].map((_, index) => (
@@ -27,7 +27,7 @@ export function KeyPerformanceIndicators({ variant }: { variant: Variant }) {
   }
 
   return (
-    <div className="w-full max-w-96">
+    <div className={`w-full max-w-96 ${isPlaceholderData ? 'text-muted' : ''}`}>
       <DataPair left="Anzahl der Inserate" right={formatNumber(data.numberOfListings, { decimalPlaces: 0 })} />
       <DataPair left="Median Größe" right={formatNumber(data.medianLivingArea, { decimalPlaces: 0, unit: 'm²' })} />
       <DataPair

@@ -11,7 +11,7 @@ type Variant = 'buy' | 'rent';
 export function HistogramLivingArea({ variant }: { variant: Variant }) {
   const filters = useFiltersFromSearchParamsState();
 
-  const { data, error, isPending } = trpc.getHistogramData.useQuery({
+  const { data, error } = trpc.getHistogramData.useQuery({
     targetColumnIndex: 1,
     binWidth: 15,
     upperLimit: 120,
@@ -19,7 +19,7 @@ export function HistogramLivingArea({ variant }: { variant: Variant }) {
     ...filters,
   });
 
-  if (isPending) {
+  if (!data) {
     return <Skeleton className="aspect-square w-full" />;
   }
 
