@@ -20,7 +20,15 @@ export function ScatterPurchasingPriceOverLivingArea({ variant }: { variant: Var
     return <div>Error</div>;
   }
 
-  return <ScatterPlot data={data} />;
+  return (
+    <ScatterPlot
+      data={data}
+      xTicks={xTicksByVariant[variant]}
+      yTicks={yTicksByVariant[variant]}
+      xUnit="m²"
+      yUnit={unitByVariant[variant]}
+    />
+  );
 }
 
 const xTicksByVariant: Record<Variant, number[]> = {
