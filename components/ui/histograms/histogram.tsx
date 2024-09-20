@@ -1,6 +1,6 @@
 'use client';
 
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
+import { ChartConfig, ChartContainer } from '@/components/ui/chart';
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from 'recharts';
 
 const chartConfig = {
@@ -38,7 +38,6 @@ export function Histogram({ chartData }: Props) {
         <CartesianGrid vertical={false} />
         <XAxis dataKey="count" orientation="top" type="number" className="text-[8px]" axisLine={false} />
         <YAxis dataKey="binLabel" type="category" scale="band" className="text-[8px]" axisLine={false} />
-        <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
         <Bar dataKey="count" fill="var(--color-count)" radius={4}>
           <LabelList dataKey="label" position="right" className="text-[10px]" />
         </Bar>
