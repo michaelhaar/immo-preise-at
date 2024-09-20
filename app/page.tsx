@@ -1,5 +1,6 @@
+import { Barchart } from '@/components/ui/charts/bar-chart';
+import { ScatterPlot } from '@/components/ui/charts/scatter-plot';
 import { FilterRegions } from '@/components/ui/filters/filter-regions';
-import { RentBuySection } from '@/components/ui/rent-buy-section';
 import Link from 'next/link';
 import { Suspense } from 'react';
 
@@ -33,8 +34,10 @@ export default function Home() {
               {/* <FilterDateRange /> */}
             </div>
           </div>
-          <RentBuySection variant="buy" />
-          <RentBuySection variant="rent" isLazyRenderingEnabled={true} />
+          <Barchart />
+          <ScatterPlot />
+          {/* <RentBuySection variant="buy" />
+          <RentBuySection variant="rent" isLazyRenderingEnabled={true} /> */}
         </Suspense>
       </main>
     </div>
