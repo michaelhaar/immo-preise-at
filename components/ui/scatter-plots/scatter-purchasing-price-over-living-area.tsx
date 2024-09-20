@@ -2,6 +2,7 @@
 
 import { useFiltersFromSearchParamsState } from '@/hooks/use-filters-from-search-params-state';
 import { trpc } from '@/lib/trpc/client';
+import { Skeleton } from '../skeleton';
 import ScatterPlot from './scatter-plot';
 
 type Variant = 'buy' | 'rent';
@@ -12,7 +13,7 @@ export function ScatterPurchasingPriceOverLivingArea({ variant }: { variant: Var
   const { data, error, isPending } = trpc.getScatterData.useQuery({ ...filters, variant });
 
   if (isPending) {
-    return <div className="aspect-square w-full">Loading...</div>;
+    return <Skeleton className="aspect-square w-full" />;
   }
 
   if (error) {

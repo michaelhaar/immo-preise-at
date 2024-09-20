@@ -1,5 +1,6 @@
 'use client';
 
+import { Skeleton } from '@/components/ui/skeleton';
 import { useFiltersFromSearchParamsState } from '@/hooks/use-filters-from-search-params-state';
 import { trpc } from '@/lib/trpc/client';
 import { formatNumber } from '@/lib/utils';
@@ -12,7 +13,13 @@ export function KeyPerformanceIndicators({ variant }: { variant: Variant }) {
   const { data, isPending, error } = trpc.getKeyPerformanceIndicatorData.useQuery({ ...filters, variant });
 
   if (isPending) {
-    return <div>Loading...</div>;
+    return (
+      <div className="w-full max-w-96">
+        {[...Array(6)].map((_, index) => (
+          <Skeleton key={index} className="my-1 h-6 w-full" />
+        ))}
+      </div>
+    );
   }
 
   if (error) {

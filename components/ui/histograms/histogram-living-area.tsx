@@ -2,6 +2,7 @@
 
 import { useFiltersFromSearchParamsState } from '@/hooks/use-filters-from-search-params-state';
 import { trpc } from '@/lib/trpc/client';
+import { Skeleton } from '../skeleton';
 import { Histogram, HistogramData } from './histogram';
 import { getFormattedPercentage, getTotalCount } from './utils';
 
@@ -19,7 +20,7 @@ export function HistogramLivingArea({ variant }: { variant: Variant }) {
   });
 
   if (isPending) {
-    return <div className="aspect-square w-full">Loading...</div>;
+    return <Skeleton className="aspect-square w-full" />;
   }
 
   if (error) {
