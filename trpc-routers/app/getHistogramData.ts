@@ -6,6 +6,13 @@ import { getPostalCodeCondition } from './utils';
 
 const supportedTargetColumns = ['purchasingPrice', 'livingArea', 'rent'];
 
+const outputSchema = z.array(
+  z.object({
+    binFloor: z.number(),
+    count: z.number(),
+  }),
+);
+
 export const getHistogramData = baseProcedure
   .input(
     z.object({
@@ -22,14 +29,7 @@ export const getHistogramData = baseProcedure
       toDate: z.string(),
     }),
   )
-  .output(
-    z.array(
-      z.object({
-        binFloor: z.number(),
-        count: z.number(),
-      }),
-    ),
-  )
+  .output(outputSchema)
   .query(async (opts) => {
     const { variant, targetColumnIndex, binWidth, upperLimit, postalCodes, postalCodePrefixes, fromDate, toDate } =
       opts.input;
@@ -85,6 +85,15 @@ export const getHistogramData = baseProcedure
       }),
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return rows as any;
+    const outputData = outputSchema.parse(rows);
+
+    // handle edge case: some bins might be missing in the result if there are no listings in that bin
+    for (let binFloor = 0; binFloor < upperLimit + binWidth; binFloor += binWidth) {
+      if (!outputData.find((row) => row.binFloor === binFloor)) {
+        outputData.push({ binFloor: Math.min(binFloor, upperLimit), count: 0 });
+      }
+    }
+    outputData.sort((a, b) => a.binFloor - b.binFloor);
+
+    return outputData;
   });

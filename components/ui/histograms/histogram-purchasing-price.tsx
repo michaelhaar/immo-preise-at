@@ -2,6 +2,7 @@
 
 import { useFiltersFromSearchParamsState } from '@/hooks/use-filters-from-search-params-state';
 import { trpc } from '@/lib/trpc/client';
+import { Skeleton } from '../skeleton';
 import { Histogram, HistogramData } from './histogram';
 import { getFormattedPercentage, getTotalCount } from './utils';
 
@@ -10,7 +11,7 @@ type Variant = 'buy' | 'rent';
 export function HistogramPurchasingPrice({ variant }: { variant: Variant }) {
   const filters = useFiltersFromSearchParamsState();
 
-  const { data, error, isPending } = trpc.getHistogramData.useQuery({
+  const { data, error } = trpc.getHistogramData.useQuery({
     targetColumnIndex: variant === 'buy' ? 0 : 2,
     variant,
     binWidth: binWidthByVariant[variant],
@@ -18,8 +19,8 @@ export function HistogramPurchasingPrice({ variant }: { variant: Variant }) {
     ...filters,
   });
 
-  if (isPending) {
-    return <div className="aspect-square w-full">Loading...</div>;
+  if (!data) {
+    return <Skeleton className="aspect-square w-full" />;
   }
 
   if (error) {

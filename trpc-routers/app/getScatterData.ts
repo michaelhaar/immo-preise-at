@@ -49,7 +49,7 @@ export const getScatterData = baseProcedure
             ${variant === 'buy' ? 'purchasingPrice' : 'rent'} IS NOT NULL
           ORDER BY
             createdAt DESC
-          LIMIT 3000
+          LIMIT 1000
         `,
         args: {
           userId: getRequiredEnvVar('USER_ID'),
