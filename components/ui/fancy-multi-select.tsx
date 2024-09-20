@@ -12,7 +12,8 @@ import { X } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from '@/components/ui/command';
 import { Command as CommandPrimitive } from 'cmdk';
-import { SetStateAction, useCallback, useRef, useState } from 'react';
+import { SetStateAction, useCallback, useMemo, useRef, useState } from 'react';
+import { FixedSizeList } from 'react-window';
 
 type Props = {
   selectedOptions: string[];
@@ -32,12 +33,8 @@ export function FancyMultiSelect({
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState<string>('');
-  const groupRef = useRef<HTMLDivElement>(null);
 
   const handleInputValueChange = (inputValue: string) => {
-    requestAnimationFrame(() => {
-      groupRef.current?.scrollTo({ top: 0 });
-    });
     if (!open) {
       setOpen(true);
     }
@@ -67,7 +64,10 @@ export function FancyMultiSelect({
     }
   }, []);
 
-  const selectables = options.filter((option) => !selectedOptions.includes(option));
+  const selectables = useMemo(() => {
+    if (!inputValue) return options;
+    return options.filter((option) => option.toUpperCase().includes(inputValue.toUpperCase()));
+  }, [inputValue, options]);
 
   return (
     <Command onKeyDown={handleKeyDown} className="overflow-visible bg-transparent">
@@ -109,30 +109,33 @@ export function FancyMultiSelect({
       </div>
       <div className="relative mt-2">
         <CommandList>
-          {open && selectables.length > 0 ? (
+          {open ? (
             <div className="absolute top-0 z-10 w-full rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
-              <CommandGroup className="h-96 overflow-auto" ref={groupRef}>
-                {selectables.map((option) => {
-                  return (
-                    <CommandItem
-                      key={option}
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                      }}
-                      onSelect={() => {
-                        setOpen(false);
-                        setInputValue('');
-                        onSelectedOptionsChange((prev) => [...prev, option]);
-                      }}
-                      className={'cursor-pointer'}
-                    >
-                      {option}
-                    </CommandItem>
-                  );
-                })}
-              </CommandGroup>
-              <CommandEmpty>{emptyMessage}</CommandEmpty>
+              {selectables.length > 0 ? (
+                <CommandGroup>
+                  <FixedSizeList width="100%" height={200} itemCount={selectables.length} itemSize={32}>
+                    {({ index, style }) => (
+                      <CommandItem
+                        key={selectables[index]}
+                        style={style}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                        }}
+                        onSelect={() => {
+                          setOpen(false);
+                          setInputValue('');
+                          onSelectedOptionsChange((prev) => [...prev, selectables[index]]);
+                        }}
+                        className={'cursor-pointer'}
+                      >
+                        {selectables[index]}
+                      </CommandItem>
+                    )}
+                  </FixedSizeList>
+                </CommandGroup>
+              ) : null}
+              {selectables.length === 0 ? <CommandEmpty>{emptyMessage}</CommandEmpty> : null}
             </div>
           ) : null}
         </CommandList>
