@@ -7,6 +7,6 @@ export function useRegionsSearchParamsState() {
     name: 'region',
     parser: stringArrayParser,
     serializer: stringArraySerializer,
-    debounceInMs: 1000,
+    debounceInMs: 100,
   });
 }
