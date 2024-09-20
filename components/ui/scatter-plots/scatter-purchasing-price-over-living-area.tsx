@@ -2,8 +2,8 @@
 
 import { useFiltersFromSearchParamsState } from '@/hooks/use-filters-from-search-params-state';
 import { trpc } from '@/lib/trpc/client';
+import { ScatterPlot } from '../charts/scatter-plot';
 import { Skeleton } from '../skeleton';
-import ScatterPlot from './scatter-plot';
 
 type Variant = 'buy' | 'rent';
 
@@ -20,14 +20,7 @@ export function ScatterPurchasingPriceOverLivingArea({ variant }: { variant: Var
     return <div>Error</div>;
   }
 
-  return (
-    <ScatterPlot
-      data={data}
-      xTicks={xTicksByVariant[variant]}
-      yTicks={yTicksByVariant[variant]}
-      unit={unitByVariant[variant]}
-    />
-  );
+  return <ScatterPlot data={data} />;
 }
 
 const xTicksByVariant: Record<Variant, number[]> = {

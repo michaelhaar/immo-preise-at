@@ -3,7 +3,16 @@
 import * as d3 from 'd3';
 import { useEffect, useRef } from 'react';
 
-export function ScatterPlot() {
+type ScatterPlotData = {
+  x: number | null;
+  y: number | null;
+}[];
+
+type Props = {
+  data: ScatterPlotData;
+};
+
+export function ScatterPlot({ data }: Props) {
   const ref = useRef<SVGSVGElement | null>(null);
 
   useEffect(() => {
@@ -21,38 +30,33 @@ export function ScatterPlot() {
       .append('g')
       .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-    //Read the data
-    d3.csv('https://raw.githubusercontent.com/holtzy/data_to_viz/master/Example_dataset/2_TwoNum.csv').then(
-      function (data) {
-        // Add X axis
-        var x = d3.scaleLinear().domain([0, 4000]).range([0, width]);
-        svg
-          .append('g')
-          .attr('transform', 'translate(0,' + height + ')')
-          .call(d3.axisBottom(x));
+    // Add X axis
+    var x = d3.scaleLinear().domain([0, 200]).range([0, width]);
+    svg
+      .append('g')
+      .attr('transform', 'translate(0,' + height + ')')
+      .call(d3.axisBottom(x));
 
-        // Add Y axis
-        var y = d3.scaleLinear().domain([0, 500000]).range([height, 0]);
-        svg.append('g').call(d3.axisLeft(y));
+    // Add Y axis
+    var y = d3.scaleLinear().domain([0, 900]).range([height, 0]);
+    svg.append('g').call(d3.axisLeft(y));
 
-        // Add dots
-        svg
-          .append('g')
-          .selectAll('dot')
-          .data(data)
-          .enter()
-          .append('circle')
-          .attr('cx', function (d) {
-            return x(d.GrLivArea);
-          })
-          .attr('cy', function (d) {
-            return y(d.SalePrice);
-          })
-          .attr('r', 1.5)
-          .style('fill', '#69b3a2');
-      },
-    );
-  }, []);
+    // Add dots
+    svg
+      .append('g')
+      .selectAll('dot')
+      .data(data)
+      .enter()
+      .append('circle')
+      .attr('cx', function (d) {
+        return x(d.x ?? 0);
+      })
+      .attr('cy', function (d) {
+        return y(d.y ?? 0);
+      })
+      .attr('r', 1.5)
+      .style('fill', '#69b3a2');
+  }, [data]);
 
   return <svg width={460} height={400} id="scatterplot" ref={ref} />;
 }
