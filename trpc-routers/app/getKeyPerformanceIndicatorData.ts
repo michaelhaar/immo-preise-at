@@ -26,6 +26,8 @@ export const getKeyPerformanceIndicatorData = baseProcedure
     }),
   )
   .query(async (opts) => {
+    console.log('hello from getKeyPerformanceIndicatorData');
+
     const { variant, postalCodes, postalCodePrefixes, fromDate, toDate } = opts.input;
 
     const priceColumn = variant === 'buy' ? 'purchasingPrice' : 'rent';
