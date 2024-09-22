@@ -1,10 +1,9 @@
+import { supportedHistogramColumnNames } from '@/lib/constants';
 import { getDbClient } from '@/lib/db-client';
 import { baseProcedure } from '@/lib/trpc/init';
 import { getRequiredEnvVar, transformNamedArgsToPositionalArgs } from '@/lib/utils';
 import { z } from 'zod';
 import { getPostalCodeCondition } from './utils';
-
-const supportedTargetColumns = ['purchasingPrice', 'livingArea', 'rent'];
 
 const outputSchema = z.array(
   z.object({
@@ -16,11 +15,14 @@ const outputSchema = z.array(
 export const getHistogramData = baseProcedure
   .input(
     z.object({
-      variant: z.enum(['buy', 'rent']),
       targetColumnIndex: z
         .number()
         .min(0)
-        .max(supportedTargetColumns.length - 1),
+        .max(supportedHistogramColumnNames.length - 1),
+      notNullColumnIndex: z
+        .number()
+        .min(0)
+        .max(supportedHistogramColumnNames.length - 1),
       binWidth: z.number(),
       upperLimit: z.number(),
       postalCodes: z.array(z.string()),
@@ -31,9 +33,18 @@ export const getHistogramData = baseProcedure
   )
   .output(outputSchema)
   .query(async (opts) => {
-    const { variant, targetColumnIndex, binWidth, upperLimit, postalCodes, postalCodePrefixes, fromDate, toDate } =
-      opts.input;
-    const targetColumn = supportedTargetColumns[targetColumnIndex];
+    const {
+      targetColumnIndex,
+      notNullColumnIndex,
+      binWidth,
+      upperLimit,
+      postalCodes,
+      postalCodePrefixes,
+      fromDate,
+      toDate,
+    } = opts.input;
+    const targetColumn = supportedHistogramColumnNames[targetColumnIndex];
+    const notNullColumn = supportedHistogramColumnNames[notNullColumnIndex];
     const [postalCodeCondition, { postalCodesLike }] = getPostalCodeCondition({ postalCodes, postalCodePrefixes });
 
     // see: https://popsql.com/sql-templates/analytics/how-to-create-histograms-in-sql
@@ -61,7 +72,7 @@ export const getHistogramData = baseProcedure
             AND
               createdAt <= (:toDate)
             AND
-              ${variant === 'buy' ? 'purchasingPrice' : 'rent'} IS NOT NULL
+              ${notNullColumn} IS NOT NULL
             GROUP BY 1
             ORDER BY 1
           )
