@@ -2,8 +2,6 @@ import { createTRPCContext } from '@/lib/trpc/init';
 import { appRouter } from '@/trpc-routers/app/app';
 import { fetchRequestHandler } from '@trpc/server/adapters/fetch';
 
-const ONE_HOUR_IN_SECONDS = 60 * 60;
-
 const handler = (req: Request) =>
   fetchRequestHandler({
     endpoint: '/api/trpc',
@@ -12,9 +10,7 @@ const handler = (req: Request) =>
     createContext: createTRPCContext,
     responseMeta(_opts) {
       return {
-        headers: new Headers([
-          ['cache-control', `s-maxage=${secondsUntilNext5AmUtc()}, stale-while-revalidate=${ONE_HOUR_IN_SECONDS}`],
-        ]),
+        headers: new Headers([['cache-control', `s-maxage=${secondsUntilNext5AmUtc()}, must-revalidate`]]),
       };
     },
   });
