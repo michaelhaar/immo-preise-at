@@ -6,7 +6,7 @@ import { Skeleton } from '../skeleton';
 
 const chartConfig = {
   count: {
-    label: 'neue Inserate',
+    label: 'Anzahl  Inserate',
     color: 'hsl(var(--chart-1))',
   },
 } satisfies ChartConfig;
@@ -14,15 +14,11 @@ const chartConfig = {
 export function NewListingsChart({ variant }: { variant: 'buy' | 'rent' }) {
   const filters = useFiltersFromSearchParamsState();
 
-  const today = new Date().toISOString().split('T')[0];
-  const twoWeeksAgo = new Date(new Date().setDate(new Date().getDate() - 14)).toISOString().split('T')[0];
-
   const { data, error } = trpc.getNewListingsData.useQuery({
     variant,
     postalCodes: filters.postalCodes,
     postalCodePrefixes: filters.postalCodePrefixes,
-    fromDate: twoWeeksAgo,
-    toDate: today,
+    lastNDays: 14,
   });
 
   if (!data) {

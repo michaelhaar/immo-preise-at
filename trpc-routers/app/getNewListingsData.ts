@@ -17,13 +17,12 @@ export const getNewListingsData = baseProcedure
       variant: z.enum(['buy', 'rent']),
       postalCodes: z.array(z.string()),
       postalCodePrefixes: z.array(z.string()),
-      fromDate: z.string(),
-      toDate: z.string(),
+      lastNDays: z.number(),
     }),
   )
   .output(outputSchema)
   .query(async (opts) => {
-    const { variant, postalCodes, postalCodePrefixes, fromDate, toDate } = opts.input;
+    const { variant, postalCodes, postalCodePrefixes, lastNDays } = opts.input;
 
     const priceColumn = variant === 'buy' ? 'purchasingPrice' : 'rent';
     const [postalCodeCondition, { postalCodesLike }] = getPostalCodeCondition({ postalCodes, postalCodePrefixes });
@@ -42,9 +41,9 @@ export const getNewListingsData = baseProcedure
             projectName = (:projectName)
           ${postalCodeCondition}
           AND
-            createdAt >= (:fromDate)
+            createdAt >= DATE('NOW', '${-lastNDays} days')
           AND
-            createdAt <= (:toDate)
+            createdAt <= DATE('NOW', '+1 day')
           AND
             ${priceColumn} IS NOT NULL
           GROUP BY day
@@ -52,8 +51,6 @@ export const getNewListingsData = baseProcedure
         args: {
           userId: getRequiredEnvVar('USER_ID'),
           projectName: getRequiredEnvVar('PROJECT_NAME'),
-          fromDate,
-          toDate,
           postalCodes,
           postalCodesLike,
         },
@@ -61,26 +58,24 @@ export const getNewListingsData = baseProcedure
     );
 
     const parsedRows = outputSchema.parse(rows);
-    return fillMissingDates(parsedRows, fromDate, toDate);
+    return fillMissingDates(parsedRows, lastNDays);
   });
 
-function fillMissingDates(rows: z.infer<typeof outputSchema>, fromDate: string, toDate: string) {
-  function getFromToDaysArray(from: string, to: string) {
-    const fromDate = new Date(from);
-    const toDate = new Date(to);
-    const days = [];
-    for (let date = fromDate; date <= toDate; date.setDate(date.getDate() + 1)) {
-      days.push(date.toISOString().split('T')[0]);
-    }
-    return days;
+function fillMissingDates(rows: z.infer<typeof outputSchema>, lastNDays: number) {
+  const toDate = new Date();
+  const fromDate = new Date(toDate);
+  fromDate.setDate(fromDate.getDate() - lastNDays);
+
+  const fromToDaysArray = [];
+  for (let date = fromDate; date <= toDate; date.setDate(date.getDate() + 1)) {
+    fromToDaysArray.push(date.toISOString().split('T')[0]);
   }
 
-  const FromToDaysArray = getFromToDaysArray(fromDate, toDate);
-  for (const day of FromToDaysArray) {
+  for (const day of fromToDaysArray) {
     if (!rows.some((row) => row.day === day)) {
       rows.push({ day, count: 0 });
     }
   }
 
-  return rows;
+  return rows.sort((a, b) => a.day.localeCompare(b.day));
 }
