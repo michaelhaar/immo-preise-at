@@ -2,6 +2,7 @@
 
 import { KeyPerformanceIndicators } from '@/app/key-performance-indicators';
 import { useEffect, useRef, useState } from 'react';
+import { NewListingsChart } from './charts/new-listings-chart';
 import { HistogramDataManager } from './histograms/histogram-data-manager';
 import { ScatterPurchasingPriceOverLivingArea } from './scatter-plots/scatter-purchasing-price-over-living-area';
 
@@ -51,6 +52,7 @@ export function RentBuySection({
       {shouldRenderData ? (
         <div className="mt-8 flex w-full flex-col items-center gap-8 pb-12">
           <KeyPerformanceIndicators variant={variant} />
+          <NewListingsChart variant={variant} />
           <ScatterPurchasingPriceOverLivingArea variant={variant} />
           <HistogramDataManager variant={variant} target="price" />
           <HistogramDataManager variant={variant} target="livingArea" />
