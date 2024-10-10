@@ -4,6 +4,13 @@ import { getRequiredEnvVar, transformNamedArgsToPositionalArgs } from '@/lib/uti
 import { z } from 'zod';
 import { getPostalCodeCondition } from './utils';
 
+const outputSchema = z.array(
+  z.object({
+    day: z.string(),
+    count: z.number(),
+  }),
+);
+
 export const getNewListingsData = baseProcedure
   .input(
     z.object({
@@ -14,14 +21,7 @@ export const getNewListingsData = baseProcedure
       toDate: z.string(),
     }),
   )
-  .output(
-    z.array(
-      z.object({
-        day: z.string(),
-        count: z.number(),
-      }),
-    ),
-  )
+  .output(outputSchema)
   .query(async (opts) => {
     const { variant, postalCodes, postalCodePrefixes, fromDate, toDate } = opts.input;
 
@@ -60,6 +60,27 @@ export const getNewListingsData = baseProcedure
       }),
     );
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return rows as any;
+    const parsedRows = outputSchema.parse(rows);
+    return fillMissingDates(parsedRows, fromDate, toDate);
   });
+
+function fillMissingDates(rows: z.infer<typeof outputSchema>, fromDate: string, toDate: string) {
+  function getFromToDaysArray(from: string, to: string) {
+    const fromDate = new Date(from);
+    const toDate = new Date(to);
+    const days = [];
+    for (let date = fromDate; date <= toDate; date.setDate(date.getDate() + 1)) {
+      days.push(date.toISOString().split('T')[0]);
+    }
+    return days;
+  }
+
+  const FromToDaysArray = getFromToDaysArray(fromDate, toDate);
+  for (const day of FromToDaysArray) {
+    if (!rows.some((row) => row.day === day)) {
+      rows.push({ day, count: 0 });
+    }
+  }
+
+  return rows;
+}
