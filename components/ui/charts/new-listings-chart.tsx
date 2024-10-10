@@ -6,7 +6,7 @@ import { Skeleton } from '../skeleton';
 
 const chartConfig = {
   count: {
-    label: 'Anzahl',
+    label: 'neue Inserate',
     color: 'hsl(var(--chart-1))',
   },
 } satisfies ChartConfig;
@@ -57,7 +57,7 @@ export function NewListingsChart({ variant }: { variant: 'buy' | 'rent' }) {
           content={
             <ChartTooltipContent
               className="w-[150px]"
-              nameKey="views"
+              nameKey="count"
               labelFormatter={(value) => {
                 return new Date(value).toLocaleDateString('de-AT', {
                   month: 'short',
