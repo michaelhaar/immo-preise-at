@@ -46,6 +46,7 @@ export function NewListingsChart({ variant }: { variant: 'buy' | 'rent' }) {
           tickLine={false}
           axisLine={false}
           tickMargin={8}
+          minTickGap={12}
           tickFormatter={(value) => {
             return new Date(value).toLocaleDateString('de-AT', { weekday: 'short' });
           }}
