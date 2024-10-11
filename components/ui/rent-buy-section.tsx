@@ -64,6 +64,6 @@ export function RentBuySection({
 }
 
 const sectionHeadingByVariant: Record<Variant, string> = {
-  buy: 'Preise Eigentumswohnungen',
-  rent: 'Preise Mietwohnungen',
+  buy: 'Angebotspreise Eigentumswohnungen',
+  rent: 'Angebotspreise Mietwohnungen',
 };
