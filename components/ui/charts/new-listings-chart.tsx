@@ -42,6 +42,7 @@ export function NewListingsChart({ variant }: { variant: 'buy' | 'rent' }) {
         <CartesianGrid vertical={false} />
         <XAxis
           dataKey="day"
+          className="text-[8px]"
           tickLine={false}
           axisLine={false}
           tickMargin={8}
