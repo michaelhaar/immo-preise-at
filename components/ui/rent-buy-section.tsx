@@ -3,6 +3,7 @@
 import { KeyPerformanceIndicators } from '@/app/key-performance-indicators';
 import { useEffect, useRef, useState } from 'react';
 import { NewListingsChart } from './charts/new-listings-chart';
+import { MedianPricePerM2ChoroplethMapManager } from './choropleth-map/median-price-per-m2-choropleth-map-manager';
 import { HistogramDataManager } from './histograms/histogram-data-manager';
 import { ScatterPurchasingPriceOverLivingArea } from './scatter-plots/scatter-purchasing-price-over-living-area';
 
@@ -51,6 +52,7 @@ export function RentBuySection({
       </div>
       {shouldRenderData ? (
         <div className="mt-8 flex w-full flex-col items-center gap-8 pb-12">
+          <MedianPricePerM2ChoroplethMapManager variant={variant} />
           <KeyPerformanceIndicators variant={variant} />
           <NewListingsChart variant={variant} />
           <ScatterPurchasingPriceOverLivingArea variant={variant} />
