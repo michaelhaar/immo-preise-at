@@ -73,7 +73,7 @@ export function MedianPricePerM2ChoroplethMapManager({ variant }: props) {
 
   const choroplethData = Array.from(dataMap.values());
 
-  return <AustriaPostalCodeChoroplethMap data={choroplethData} height={400} />;
+  return <AustriaPostalCodeChoroplethMap data={choroplethData} height="400px" width="100%" />;
 }
 
 function createColorMap(values: number[]) {
