@@ -21,7 +21,7 @@ export function MedianPricePerM2ChoroplethMapManager({ variant }: props) {
     { placeholderData: [] },
   );
 
-  if (!data) {
+  if (!data || (filters.postalCodes.length === 1 && filters.postalCodePrefixes.length === 0)) {
     return null;
   }
 
