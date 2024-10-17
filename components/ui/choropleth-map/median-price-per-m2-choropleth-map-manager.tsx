@@ -1,4 +1,5 @@
 import { useFiltersFromSearchParamsState } from '@/hooks/use-filters-from-search-params-state';
+import { allPostalCodes } from '@/lib/postal-codes-by-district';
 import { trpc } from '@/lib/trpc/client';
 import { AustriaPostalCodeChoroplethMap } from './austria-postal-code-choropleth-map';
 
@@ -28,14 +29,49 @@ export function MedianPricePerM2ChoroplethMapManager({ variant }: props) {
     return <div>Error</div>;
   }
 
-  const cmap = createColorMap(data.map(({ median }) => median));
+  const dataMap: Map<
+    string,
+    {
+      postalCode: string;
+      fill?: string;
+      stroke?: string;
+      tooltip?: string;
+    }
+  > = new Map();
 
-  const choroplethData = data.map(({ postalCode, median, count }) => ({
-    postalCode,
-    fill: cmap(median),
-    stroke: 'white',
-    tooltip: `${postalCode}: ${median.toFixed(variant === 'buy' ? 0 : 2)} €/m² (${count} Inserate)`,
-  }));
+  function addDefaultChoroplethData(postalCodes: string[]) {
+    postalCodes.forEach((postalCode) => {
+      dataMap.set(postalCode, {
+        postalCode,
+        fill: 'white',
+        stroke: 'black',
+        tooltip: `${postalCode}: Keine Inserate`,
+      });
+    });
+  }
+
+  if (filters.postalCodes.length === 0 && filters.postalCodePrefixes.length === 0) {
+    addDefaultChoroplethData(allPostalCodes);
+  }
+
+  addDefaultChoroplethData(filters.postalCodes);
+
+  filters.postalCodePrefixes.forEach((postalCodePrefix) => {
+    const postalCodes = allPostalCodes.filter((postalCode) => postalCode.startsWith(postalCodePrefix));
+    addDefaultChoroplethData(postalCodes);
+  });
+
+  const cmap = createColorMap(data.map(({ median }) => median));
+  data.forEach(({ postalCode, median, count }) => {
+    dataMap.set(postalCode, {
+      postalCode,
+      fill: cmap(median),
+      stroke: 'white',
+      tooltip: `${postalCode}: ${median.toFixed(variant === 'buy' ? 0 : 2)} €/m² (${count} Inserate)`,
+    });
+  });
+
+  const choroplethData = Array.from(dataMap.values());
 
   return <AustriaPostalCodeChoroplethMap data={choroplethData} height={400} />;
 }
