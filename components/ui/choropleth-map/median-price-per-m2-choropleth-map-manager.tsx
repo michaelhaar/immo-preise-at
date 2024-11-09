@@ -67,7 +67,7 @@ export function MedianPricePerM2ChoroplethMapManager({ variant }: props) {
       postalCode,
       fill: cmap(median),
       stroke: 'white',
-      tooltip: `${postalCode}: ${median.toFixed(variant === 'buy' ? 0 : 2)} €/m² (${count} Inserate)`,
+      tooltip: `${postalCode}: ${median.toFixed(variant === 'buy' ? 0 : 2)}\u00A0€/m² (${count}\u00A0Inserate)`,
     });
   });
 
