@@ -25,7 +25,12 @@ export function FilterDateRange() {
       <SelectTrigger className="w-[120px] sm:w-[180px]">
         <SelectValue placeholder="Zeitraum auswählen" />
       </SelectTrigger>
-      <SelectContent>
+      <SelectContent
+        ref={(ref) =>
+          // temporary workaround from https://github.com/shadcn-ui/ui/issues/1220
+          ref?.addEventListener('touchend', (e) => e.preventDefault())
+        }
+      >
         <SelectGroup>
           <SelectLabel>Zeitraum</SelectLabel>
           {dateRangeOptions.map((dateRange) => (
