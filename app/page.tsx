@@ -1,5 +1,6 @@
 import { FilterRegions } from '@/components/ui/filters/filter-regions';
 import { RentBuySection } from '@/components/ui/rent-buy-section';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Link from 'next/link';
 import { Suspense } from 'react';
 
@@ -33,8 +34,21 @@ export default function Home() {
               {/* <FilterDateRange /> */}
             </div>
           </div>
-          <RentBuySection variant="buy" />
-          <RentBuySection variant="rent" isLazyRenderingEnabled={true} />
+          <div className="flex flex-row items-center justify-between">
+            <h2 className="text-xl font-bold sm:text-3xl">Angebotspreise</h2>
+          </div>
+          <Tabs defaultValue="buy" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="buy">Eigentumswohnungen</TabsTrigger>
+              <TabsTrigger value="rent">Mietwohnungen</TabsTrigger>
+            </TabsList>
+            <TabsContent value="buy">
+              <RentBuySection variant="buy" />
+            </TabsContent>
+            <TabsContent value="rent">
+              <RentBuySection variant="rent" />
+            </TabsContent>
+          </Tabs>
         </Suspense>
       </main>
     </div>
