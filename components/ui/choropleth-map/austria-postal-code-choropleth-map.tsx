@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { MouseEventHandler, useEffect, useRef, useState } from 'react';
 
 export type ChoroplethMapData = {
   postalCode: string;
@@ -16,6 +16,7 @@ type Props = {
 };
 
 export function AustriaPostalCodeChoroplethMap({ data, width, height }: Props) {
+  const [tooltip, setTooltip] = useState({ visible: false, text: '', x: 0, y: 0 });
   const svgRef = useRef<SVGSVGElement>(null);
   const [viewBox, setViewBox] = useState('0 0 28086 19866');
 
@@ -27,16 +28,73 @@ export function AustriaPostalCodeChoroplethMap({ data, width, height }: Props) {
     }
   }, [data]);
 
+  const handleSvgClick: MouseEventHandler = (e) => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    const rect = svg.getBoundingClientRect();
+
+    // Find clicked element using hit testing
+    const element = document.elementFromPoint(e.clientX, e.clientY);
+    if (element?.tagName === 'path') {
+      const pathElement = element as SVGPathElement;
+      setTooltip({
+        visible: true,
+        text: pathElement.dataset.pathId || '',
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top,
+      });
+    } else {
+      setTooltip({ visible: false, text: '', x: 0, y: 0 });
+    }
+  };
+
   return (
-    <svg ref={svgRef} width={width} height={height} viewBox={viewBox} xmlns="http://www.w3.org/2000/svg">
-      {data.map(({ postalCode, fill, stroke, tooltip }) =>
-        pathDataByPostalCode[postalCode] ? (
-          <path key={postalCode} d={pathDataByPostalCode[postalCode]} fill={fill} stroke={stroke}>
-            {tooltip ? <title>{tooltip}</title> : null}
-          </path>
-        ) : null,
+    <div
+      className="relative"
+      style={{
+        width,
+        height,
+      }}
+    >
+      <svg
+        ref={svgRef}
+        width={width}
+        height={height}
+        viewBox={viewBox}
+        xmlns="http://www.w3.org/2000/svg"
+        onClick={handleSvgClick}
+      >
+        {data.map(({ postalCode, fill, stroke, tooltip }) =>
+          pathDataByPostalCode[postalCode] ? (
+            <path
+              key={postalCode}
+              d={pathDataByPostalCode[postalCode]}
+              fill={fill}
+              stroke={stroke}
+              data-path-id={tooltip}
+            />
+          ) : null,
+        )}
+      </svg>
+      {tooltip.visible && (
+        <div
+          className="absolute z-10 -mt-3 -translate-x-1/2 -translate-y-full rounded"
+          style={{ left: tooltip.x, top: tooltip.y }}
+        >
+          <div className="relative">
+            <div className="rounded bg-black p-2 text-white">{tooltip.text}</div>
+            <div
+              className="absolute left-1/2 top-full h-0 w-0 -translate-x-1/2"
+              style={{
+                borderLeft: '6px solid transparent',
+                borderRight: '6px solid transparent',
+                borderTop: '6px solid black',
+              }}
+            />
+          </div>
+        </div>
       )}
-    </svg>
+    </div>
   );
 }
 
