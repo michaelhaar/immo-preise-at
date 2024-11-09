@@ -1,3 +1,4 @@
+import { FilterDateRange } from '@/components/ui/filters/filter-date-range';
 import { FilterRegions } from '@/components/ui/filters/filter-regions';
 import { RentBuySection } from '@/components/ui/rent-buy-section';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -36,6 +37,7 @@ export default function Home() {
           </div>
           <div className="flex flex-row items-center justify-between">
             <h2 className="text-xl font-bold sm:text-3xl">Angebotspreise</h2>
+            <FilterDateRange />
           </div>
           <Tabs defaultValue="buy" className="w-full">
             <TabsList className="grid w-full grid-cols-2">

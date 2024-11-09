@@ -18,7 +18,7 @@ export function NewListingsChart({ variant }: { variant: 'buy' | 'rent' }) {
     variant,
     postalCodes: filters.postalCodes,
     postalCodePrefixes: filters.postalCodePrefixes,
-    lastNDays: 14,
+    lastNDays: 30,
   });
 
   if (!data) {

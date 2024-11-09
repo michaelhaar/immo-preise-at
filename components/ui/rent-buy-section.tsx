@@ -9,8 +9,6 @@ import { ScatterPurchasingPriceOverLivingArea } from './scatter-plots/scatter-pu
 type Variant = 'buy' | 'rent';
 
 export function RentBuySection({ variant }: { variant: Variant }) {
-  console.log('rendering RentBuySection', variant);
-
   return (
     <div className="mt-8 flex w-full flex-col items-center gap-8 pb-12">
       <MedianPricePerM2ChoroplethMapManager variant={variant} />
