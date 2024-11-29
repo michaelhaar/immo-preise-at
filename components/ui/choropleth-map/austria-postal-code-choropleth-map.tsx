@@ -25,6 +25,10 @@ export function AustriaPostalCodeChoroplethMap({ data, width, height }: Props) {
       const svg = svgRef.current;
       const bbox = svg.getBBox();
       setViewBox(`${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`);
+
+      // set height of svg to keep aspect ratio
+      const svgWidth = svg.getBoundingClientRect().width;
+      svg.style.height = `${(bbox.height / bbox.width) * svgWidth}px`;
     }
   }, [data]);
 

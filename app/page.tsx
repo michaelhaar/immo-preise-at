@@ -7,7 +7,7 @@ import { Suspense } from 'react';
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-items-center gap-16 p-8 pb-20 font-[family-name:var(--font-geist-sans)] sm:p-20">
+    <div className="flex min-h-screen flex-col items-center justify-items-center gap-16 p-4 pb-20 font-[family-name:var(--font-geist-sans)] sm:p-20">
       <main className="row-start-2 flex w-full max-w-3xl flex-col gap-8">
         <div>
           <div className="font-bold">Woher kommen die angezeigten Daten?</div>

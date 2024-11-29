@@ -1,12 +1,12 @@
 import { useFiltersFromSearchParamsState } from '@/hooks/use-filters-from-search-params-state';
 import { trpc } from '@/lib/trpc/client';
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '../chart';
 import { Skeleton } from '../skeleton';
 
 const chartConfig = {
   count: {
-    label: 'Anzahl  Inserate',
+    label: 'Anzahl neue Inserate',
     color: 'hsl(var(--chart-1))',
   },
 } satisfies ChartConfig;
@@ -30,8 +30,8 @@ export function NewListingsChart({ variant }: { variant: 'buy' | 'rent' }) {
   }
 
   return (
-    <ChartContainer config={chartConfig} className="min-h-[200px] w-full">
-      <BarChart
+    <ChartContainer config={chartConfig} className="aspect-[3/2] w-full">
+      <AreaChart
         accessibilityLayer
         data={data}
         margin={{
@@ -46,11 +46,14 @@ export function NewListingsChart({ variant }: { variant: 'buy' | 'rent' }) {
           tickLine={false}
           axisLine={false}
           tickMargin={8}
-          minTickGap={12}
+          minTickGap={0}
           tickFormatter={(value) => {
-            return new Date(value).toLocaleDateString('de-AT', { weekday: 'short' });
+            const date = new Date(value);
+            const isMonday = date.getDay() === 1;
+            return isMonday ? date.toLocaleDateString('de-AT', { weekday: 'short' }) : '';
           }}
         />
+        <YAxis dataKey="count" className="text-[8px]" axisLine={false} />
         <ChartTooltip
           content={
             <ChartTooltipContent
@@ -58,6 +61,7 @@ export function NewListingsChart({ variant }: { variant: 'buy' | 'rent' }) {
               nameKey="count"
               labelFormatter={(value) => {
                 return new Date(value).toLocaleDateString('de-AT', {
+                  weekday: 'short',
                   month: 'short',
                   day: 'numeric',
                   year: 'numeric',
@@ -66,9 +70,22 @@ export function NewListingsChart({ variant }: { variant: 'buy' | 'rent' }) {
             />
           }
         />
+        <defs>
+          <linearGradient id="fillCount" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="var(--color-count)" stopOpacity={0.8} />
+            <stop offset="95%" stopColor="var(--color-count)" stopOpacity={0.1} />
+          </linearGradient>
+        </defs>
         <YAxis dataKey="count" className="text-[8px]" axisLine={false} />
-        <Bar dataKey="count" fill="var(--color-count)" radius={4}></Bar>
-      </BarChart>
+        <Area
+          dataKey="count"
+          type="bump"
+          fill="url(#fillCount)"
+          fillOpacity={0.4}
+          stroke="var(--color-count)"
+          stackId="a"
+        />
+      </AreaChart>
     </ChartContainer>
   );
 }
