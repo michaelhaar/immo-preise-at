@@ -1,8 +1,13 @@
 import { FilterRegions } from '@/components/ui/filters/filter-regions';
 import { Filters } from '@/components/ui/filters/filters';
 import { RentBuySection } from '@/components/ui/rent-buy-section';
+import { Viewport } from 'next';
 import Link from 'next/link';
 import { Suspense } from 'react';
+
+export const viewport: Viewport = {
+  maximumScale: 1,
+};
 
 export default function Home() {
   return (
@@ -10,7 +15,7 @@ export default function Home() {
       <main className="row-start-2 flex w-full max-w-3xl flex-col gap-8">
         <div>
           <div className="font-bold">Woher kommen die angezeigten Daten?</div>
-          <p>
+          <p className="mt-1">
             <Link className="underline" href="https://www.willhaben.at/" target="_blank">
               Willhaben
             </Link>{' '}
