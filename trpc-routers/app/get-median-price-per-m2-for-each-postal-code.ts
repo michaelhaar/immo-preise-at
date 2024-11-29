@@ -1,4 +1,4 @@
-import { realEstateListingTypes } from '@/lib/constants';
+import { RealEstateListingType, realEstateListingTypes } from '@/lib/constants';
 import { getDbClient } from '@/lib/db-client';
 import { baseProcedure } from '@/lib/trpc/init';
 import { getRequiredEnvVar, transformNamedArgsToPositionalArgs } from '@/lib/utils';
