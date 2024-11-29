@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { useState } from 'react';
 import { Button } from '../button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../card';
@@ -28,8 +29,7 @@ export function HistogramCard({ variant }: { variant: 'buy' | 'rent' }) {
               <Button
                 key={target}
                 variant="ghost"
-                data-active={selectedTarget === target}
-                className="data-[active=false]:text-muted-foreground/50"
+                className={clsx(selectedTarget !== target ? 'text-muted-foreground/50' : undefined)}
                 onClick={() => setSelectedTarget(target)}
               >
                 {labelByTarget[target]}
