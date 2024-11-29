@@ -11,11 +11,11 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function NewListingsChart({ variant }: { variant: 'buy' | 'rent' }) {
+export function NewListingsChart() {
   const filters = useFiltersFromSearchParamsState();
 
   const { data, error } = trpc.getNewListingsData.useQuery({
-    variant,
+    realEstateListingType: filters.realEstateListingType,
     postalCodes: filters.postalCodes,
     postalCodePrefixes: filters.postalCodePrefixes,
     lastNDays: 30,

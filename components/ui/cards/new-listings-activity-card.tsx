@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../card';
 import { NewListingsChart } from '../charts/new-listings-chart';
 
-export function NewListingsActivityCard({ variant }: { variant: 'buy' | 'rent' }) {
+export function NewListingsActivityCard() {
   return (
     <Card className="w-full">
       <CardHeader>
@@ -9,7 +9,7 @@ export function NewListingsActivityCard({ variant }: { variant: 'buy' | 'rent' }
         <CardDescription>Anzahl der neuen Inserate in den letzten 30 Tagen</CardDescription>
       </CardHeader>
       <CardContent>
-        <NewListingsChart variant={variant} />
+        <NewListingsChart />
       </CardContent>
     </Card>
   );

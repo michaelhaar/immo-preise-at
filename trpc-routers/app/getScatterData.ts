@@ -1,3 +1,4 @@
+import { realEstateListingTypes } from '@/lib/constants';
 import { getDbClient } from '@/lib/db-client';
 import { baseProcedure } from '@/lib/trpc/init';
 import { getRequiredEnvVar, transformNamedArgsToPositionalArgs } from '@/lib/utils';
@@ -7,7 +8,7 @@ import { getPostalCodeCondition } from './utils';
 export const getScatterData = baseProcedure
   .input(
     z.object({
-      variant: z.enum(['buy', 'rent']),
+      realEstateListingType: z.enum(realEstateListingTypes),
       postalCodes: z.array(z.string()),
       postalCodePrefixes: z.array(z.string()),
       fromDate: z.string(),
@@ -23,7 +24,7 @@ export const getScatterData = baseProcedure
     ),
   )
   .query(async (opts) => {
-    const { variant, postalCodes, postalCodePrefixes, fromDate, toDate } = opts.input;
+    const { realEstateListingType, postalCodes, postalCodePrefixes, fromDate, toDate } = opts.input;
 
     const [postalCodeCondition, { postalCodesLike }] = getPostalCodeCondition({ postalCodes, postalCodePrefixes });
 
@@ -32,7 +33,7 @@ export const getScatterData = baseProcedure
       transformNamedArgsToPositionalArgs({
         sql: `
           SELECT 
-            ${variant === 'buy' ? 'purchasingPrice / 1000' : 'rent'} AS y,
+            ${realEstateListingType === 'eigentumswohnung' ? 'purchasingPrice / 1000' : 'rent'} AS y,
             livingArea AS x
           FROM 
             tackedRealEstateListings
@@ -46,7 +47,7 @@ export const getScatterData = baseProcedure
           AND
             createdAt <= (:toDate)
           AND
-            ${variant === 'buy' ? 'purchasingPrice' : 'rent'} IS NOT NULL
+            ${realEstateListingType === 'eigentumswohnung' ? 'purchasingPrice' : 'rent'} IS NOT NULL
           AND
             livingArea IS NOT NULL
           ORDER BY

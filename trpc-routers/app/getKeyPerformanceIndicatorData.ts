@@ -1,3 +1,4 @@
+import { realEstateListingTypes } from '@/lib/constants';
 import { getDbClient } from '@/lib/db-client';
 import { baseProcedure } from '@/lib/trpc/init';
 import { getRequiredEnvVar, transformNamedArgsToPositionalArgs } from '@/lib/utils';
@@ -7,7 +8,7 @@ import { getPostalCodeCondition } from './utils';
 export const getKeyPerformanceIndicatorData = baseProcedure
   .input(
     z.object({
-      variant: z.enum(['buy', 'rent']),
+      realEstateListingType: z.enum(realEstateListingTypes),
       postalCodes: z.array(z.string()),
       postalCodePrefixes: z.array(z.string()),
       fromDate: z.string(),
@@ -26,10 +27,10 @@ export const getKeyPerformanceIndicatorData = baseProcedure
     }),
   )
   .query(async (opts) => {
-    const { variant, postalCodes, postalCodePrefixes, fromDate, toDate } = opts.input;
+    const { realEstateListingType, postalCodes, postalCodePrefixes, fromDate, toDate } = opts.input;
 
-    const priceColumn = variant === 'buy' ? 'purchasingPrice' : 'rent';
-    const pricePerM2Column = variant === 'buy' ? 'purchasingPricePerM2' : 'rentPerM2';
+    const priceColumn = realEstateListingType === 'eigentumswohnung' ? 'purchasingPrice' : 'rent';
+    const pricePerM2Column = realEstateListingType === 'eigentumswohnung' ? 'purchasingPricePerM2' : 'rentPerM2';
     const [postalCodeCondition, { postalCodesLike }] = getPostalCodeCondition({ postalCodes, postalCodePrefixes });
 
     // see: https://popsql.com/sql-templates/analytics/how-to-create-histograms-in-sql

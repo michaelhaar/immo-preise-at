@@ -6,16 +6,14 @@ import { MapCard } from './cards/map-card';
 import { NewListingsActivityCard } from './cards/new-listings-activity-card';
 import { ScatterCard } from './cards/scatter-card';
 
-type Variant = 'buy' | 'rent';
-
-export function RentBuySection({ variant }: { variant: Variant }) {
+export function RentBuySection() {
   return (
-    <div className="mt-8 flex w-full flex-col items-center gap-8 pb-12">
-      <KpiCard variant={variant} />
-      <MapCard variant={variant} />
-      <NewListingsActivityCard variant={variant} />
-      <ScatterCard variant={variant} />
-      <HistogramCard variant={variant} />
+    <div className="flex w-full flex-col items-center gap-8 pb-12">
+      <KpiCard />
+      <MapCard />
+      <NewListingsActivityCard />
+      <ScatterCard />
+      <HistogramCard />
     </div>
   );
 }

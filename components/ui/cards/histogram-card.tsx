@@ -13,7 +13,7 @@ const labelByTarget: Record<Target, string> = {
   pricePerM2: '€/m²',
 };
 
-export function HistogramCard({ variant }: { variant: 'buy' | 'rent' }) {
+export function HistogramCard() {
   const [selectedTarget, setSelectedTarget] = useState<Target>('price');
 
   return (
@@ -40,7 +40,7 @@ export function HistogramCard({ variant }: { variant: 'buy' | 'rent' }) {
       </CardHeader>
 
       <CardContent>
-        <HistogramDataManager variant={variant} target={selectedTarget} />
+        <HistogramDataManager target={selectedTarget} />
       </CardContent>
     </Card>
   );
