@@ -21,7 +21,7 @@ function RealEstateTypeFilter() {
 
   const labelByRealEstateListingType: Record<RealEstateListingType, string> = {
     mietwohnung: 'Mietwohnungen',
-    eigentumswohnung: 'Eigentumswohnungen',
+    eigentumswohnung: 'Eigentumswohn.',
   };
 
   function toggleRealEstateListingType() {
