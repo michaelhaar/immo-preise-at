@@ -7,8 +7,6 @@ import { ChartContainer } from '../charts/chart-container';
 import { ScatterPlot } from '../charts/scatter-plot';
 import { Skeleton } from '../skeleton';
 
-type Variant = 'buy' | 'rent';
-
 export function ScatterPurchasingPriceOverLivingArea() {
   const filters = useFiltersFromSearchParamsState();
 
