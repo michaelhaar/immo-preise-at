@@ -1,17 +1,31 @@
 'use client';
 
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useRealEstateListingTypeSearchParamsState } from '@/hooks/use-real-estate-listing-type-search-params-state';
 import { RealEstateListingType } from '@/lib/constants';
 import { FilterIcon } from 'lucide-react';
 import { Button } from '../button';
+import { FilterDateRange } from './filter-date-range';
 
 export function Filters() {
   return (
     <div className="flex items-center">
       <RealEstateTypeFilter />
-      <Button variant="ghost" size="icon">
-        <FilterIcon />
-      </Button>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant="ghost" size="icon">
+            <FilterIcon />
+          </Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Weitere Filter</DialogTitle>
+            <div className="pt-4">
+              <FilterDateRange />
+            </div>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

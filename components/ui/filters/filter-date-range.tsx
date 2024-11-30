@@ -22,7 +22,7 @@ export function FilterDateRange() {
 
   return (
     <Select value={dateRange} onValueChange={handleChange}>
-      <SelectTrigger className="w-[120px] sm:w-[180px]">
+      <SelectTrigger>
         <SelectValue placeholder="Zeitraum auswählen" />
       </SelectTrigger>
       <SelectContent
