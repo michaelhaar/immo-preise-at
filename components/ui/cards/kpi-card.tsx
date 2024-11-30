@@ -9,13 +9,10 @@ type Kpi = {
   value: string;
 };
 
-export function KpiCard({ variant }: { variant: 'buy' | 'rent' }) {
+export function KpiCard() {
   const filters = useFiltersFromSearchParamsState();
 
-  const { data, isLoading } = trpc.getKeyPerformanceIndicatorData.useQuery(
-    { ...filters, variant },
-    { placeholderData: undefined },
-  );
+  const { data, isLoading } = trpc.getKeyPerformanceIndicatorData.useQuery(filters, { placeholderData: undefined });
 
   function customFormatNumber(value: number | null | undefined, unit: string) {
     if (typeof value !== 'number') {

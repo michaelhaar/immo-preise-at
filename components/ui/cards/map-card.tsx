@@ -1,7 +1,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../card';
 import { MedianPricePerM2ChoroplethMapManager } from '../choropleth-map/median-price-per-m2-choropleth-map-manager';
 
-export function MapCard({ variant }: { variant: 'buy' | 'rent' }) {
+export function MapCard() {
   return (
     <Card className="w-full">
       <CardHeader>
@@ -11,7 +11,7 @@ export function MapCard({ variant }: { variant: 'buy' | 'rent' }) {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <MedianPricePerM2ChoroplethMapManager variant={variant} />
+        <MedianPricePerM2ChoroplethMapManager />
       </CardContent>
     </Card>
   );

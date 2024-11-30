@@ -1,16 +1,14 @@
+import { RealEstateListingType, realEstateListingTypes } from '@/lib/constants';
 import { getDbClient } from '@/lib/db-client';
 import { baseProcedure } from '@/lib/trpc/init';
 import { getRequiredEnvVar, transformNamedArgsToPositionalArgs } from '@/lib/utils';
 import { z } from 'zod';
 import { getPostalCodeCondition } from './utils';
 
-const variants = ['buy', 'rent'] as const;
-type Variant = (typeof variants)[number];
-
 export const getMedianPricePerM2ForEachPostalCode = baseProcedure
   .input(
     z.object({
-      variant: z.enum(variants),
+      realEstateListingType: z.enum(realEstateListingTypes),
       postalCodes: z.array(z.string()),
       postalCodePrefixes: z.array(z.string()),
       fromDate: z.string(),
@@ -27,8 +25,8 @@ export const getMedianPricePerM2ForEachPostalCode = baseProcedure
     ),
   )
   .query(async (opts) => {
-    const { variant, postalCodes, postalCodePrefixes, fromDate, toDate } = opts.input;
-    const targetColumn = targetColumnByVariant[variant];
+    const { realEstateListingType, postalCodes, postalCodePrefixes, fromDate, toDate } = opts.input;
+    const targetColumn = targetColumnByRealEstateListingType[realEstateListingType];
     const [postalCodeCondition, { postalCodesLike }] = getPostalCodeCondition({ postalCodes, postalCodePrefixes });
 
     const { rows } = await getDbClient().execute(
@@ -68,7 +66,7 @@ export const getMedianPricePerM2ForEachPostalCode = baseProcedure
     return rows as any;
   });
 
-const targetColumnByVariant: Record<Variant, string> = {
-  buy: 'purchasingPricePerM2',
-  rent: 'rentPerM2',
+const targetColumnByRealEstateListingType: Record<RealEstateListingType, string> = {
+  eigentumswohnung: 'purchasingPricePerM2',
+  mietwohnung: 'rentPerM2',
 };

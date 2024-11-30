@@ -1,17 +1,16 @@
 'use client';
 
 import { useFiltersFromSearchParamsState } from '@/hooks/use-filters-from-search-params-state';
+import { RealEstateListingType } from '@/lib/constants';
 import { trpc } from '@/lib/trpc/client';
 import { ChartContainer } from '../charts/chart-container';
 import { ScatterPlot } from '../charts/scatter-plot';
 import { Skeleton } from '../skeleton';
 
-type Variant = 'buy' | 'rent';
-
-export function ScatterPurchasingPriceOverLivingArea({ variant }: { variant: Variant }) {
+export function ScatterPurchasingPriceOverLivingArea() {
   const filters = useFiltersFromSearchParamsState();
 
-  const { data, error } = trpc.getScatterData.useQuery({ ...filters, variant });
+  const { data, error } = trpc.getScatterData.useQuery(filters);
 
   if (!data) {
     return <Skeleton className="aspect-square w-full" />;
@@ -21,15 +20,17 @@ export function ScatterPurchasingPriceOverLivingArea({ variant }: { variant: Var
     return <div>Error</div>;
   }
 
+  const { realEstateListingType } = filters;
+
   return (
     <ChartContainer
       render={(width, height) => (
         <ScatterPlot
           data={data}
-          xTicks={xTicksByVariant[variant]}
-          yTicks={yTicksByVariant[variant]}
+          xTicks={xTicksByVariant[realEstateListingType]}
+          yTicks={yTicksByVariant[realEstateListingType]}
           xUnit="m²"
-          yUnit={unitByVariant[variant]}
+          yUnit={unitByVariant[realEstateListingType]}
           width={width}
           height={height}
         />
@@ -38,17 +39,17 @@ export function ScatterPurchasingPriceOverLivingArea({ variant }: { variant: Var
   );
 }
 
-const xTicksByVariant: Record<Variant, number[]> = {
-  buy: [0, 50, 100, 150, 200],
-  rent: [0, 50, 100, 150, 200],
+const xTicksByVariant: Record<RealEstateListingType, number[]> = {
+  eigentumswohnung: [0, 50, 100, 150, 200],
+  mietwohnung: [0, 50, 100, 150, 200],
 };
 
-const yTicksByVariant: Record<Variant, number[]> = {
-  buy: [0, 250, 500, 750, 1000],
-  rent: [0, 500, 1000, 1500, 2000, 2500],
+const yTicksByVariant: Record<RealEstateListingType, number[]> = {
+  eigentumswohnung: [0, 250, 500, 750, 1000],
+  mietwohnung: [0, 500, 1000, 1500, 2000, 2500],
 };
 
-const unitByVariant: Record<Variant, string> = {
-  buy: 'k',
-  rent: '€',
+const unitByVariant: Record<RealEstateListingType, string> = {
+  eigentumswohnung: 'k',
+  mietwohnung: '€',
 };

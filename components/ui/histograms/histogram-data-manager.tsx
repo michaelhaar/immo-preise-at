@@ -1,22 +1,22 @@
 'use client';
 
 import { useFiltersFromSearchParamsState } from '@/hooks/use-filters-from-search-params-state';
-import { getHistogramColumnIndexByColumnName } from '@/lib/constants';
+import { getHistogramColumnIndexByColumnName, RealEstateListingType } from '@/lib/constants';
 import { trpc } from '@/lib/trpc/client';
 import { Skeleton } from '../skeleton';
 import { Histogram, HistogramData } from './histogram';
 import { getFormattedPercentage, getTotalCount } from './utils';
 
 type Props = {
-  variant: 'buy' | 'rent';
   target: 'livingArea' | 'pricePerM2' | 'price';
 };
 
-export function HistogramDataManager({ variant, target }: Props) {
+export function HistogramDataManager({ target }: Props) {
   const filters = useFiltersFromSearchParamsState();
+  const { realEstateListingType } = filters;
 
   const { targetColumnIndex, notNullColumnIndex, binWidth, upperLimit, createLabel } =
-    configByTargetAndVariant[variant][target];
+    configByTargetAndRealEstateListingType[realEstateListingType][target];
 
   const { data, error } = trpc.getHistogramData.useQuery({
     targetColumnIndex,
@@ -61,8 +61,8 @@ type Config = {
   createLabel: (number: number) => string;
 };
 
-const configByTargetAndVariant: Record<Props['variant'], Record<Props['target'], Config>> = {
-  buy: {
+const configByTargetAndRealEstateListingType: Record<RealEstateListingType, Record<Props['target'], Config>> = {
+  eigentumswohnung: {
     livingArea: {
       targetColumnIndex: getHistogramColumnIndexByColumnName('livingArea'),
       notNullColumnIndex: getHistogramColumnIndexByColumnName('purchasingPrice'),
@@ -85,7 +85,7 @@ const configByTargetAndVariant: Record<Props['variant'], Record<Props['target'],
       createLabel: (x) => `${x / 1000}k`,
     },
   },
-  rent: {
+  mietwohnung: {
     livingArea: {
       targetColumnIndex: getHistogramColumnIndexByColumnName('livingArea'),
       notNullColumnIndex: getHistogramColumnIndexByColumnName('rent'),

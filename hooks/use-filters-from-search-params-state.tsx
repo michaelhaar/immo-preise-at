@@ -8,11 +8,14 @@ import {
 } from '@/lib/postal-codes-by-district';
 import { useMemo } from 'react';
 import { useDateRangeSearchParamsState } from './use-date-range-search-params-state';
+import { useRealEstateListingTypeSearchParamsState } from './use-real-estate-listing-type-search-params-state';
 import { useRegionsSearchParamsState } from './use-regions-search-params-state';
 
 export function useFiltersFromSearchParamsState() {
   const [_regions, _setRegions, parsedRegions] = useRegionsSearchParamsState(); // TODO
   const [_dateRange, _setDateRange, parsedDateRange] = useDateRangeSearchParamsState();
+  const [_realEstateListingType, _setRealEstateListingType, parsedRealEstateListingType] =
+    useRealEstateListingTypeSearchParamsState();
 
   const regionsJson = JSON.stringify(parsedRegions);
   const { postalCodes, postalCodePrefixes } = useMemo(() => getPostalCodes(JSON.parse(regionsJson)), [regionsJson]);
@@ -23,6 +26,7 @@ export function useFiltersFromSearchParamsState() {
     postalCodePrefixes,
     fromDate: fromDate.toISOString(),
     toDate: toDate.toISOString(),
+    realEstateListingType: parsedRealEstateListingType,
   };
 }
 

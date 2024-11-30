@@ -14,3 +14,6 @@ export type SupportedHistogramColumnNames = (typeof supportedHistogramColumnName
 export function getHistogramColumnIndexByColumnName(column: SupportedHistogramColumnNames) {
   return supportedHistogramColumnNames.indexOf(column);
 }
+
+export const realEstateListingTypes = ['eigentumswohnung', 'mietwohnung'] as const;
+export type RealEstateListingType = (typeof realEstateListingTypes)[number];

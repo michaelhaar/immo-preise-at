@@ -3,23 +3,10 @@ import { allPostalCodes } from '@/lib/postal-codes-by-district';
 import { trpc } from '@/lib/trpc/client';
 import { AustriaPostalCodeChoroplethMap } from './austria-postal-code-choropleth-map';
 
-type props = {
-  variant: 'buy' | 'rent';
-};
-
-export function MedianPricePerM2ChoroplethMapManager({ variant }: props) {
+export function MedianPricePerM2ChoroplethMapManager() {
   const filters = useFiltersFromSearchParamsState();
 
-  const { data, error } = trpc.getMedianPricePerM2ForEachPostalCode.useQuery(
-    {
-      variant,
-      postalCodes: filters.postalCodes,
-      postalCodePrefixes: filters.postalCodePrefixes,
-      fromDate: filters.fromDate,
-      toDate: filters.toDate,
-    },
-    { placeholderData: [] },
-  );
+  const { data, error } = trpc.getMedianPricePerM2ForEachPostalCode.useQuery(filters, { placeholderData: [] });
 
   if (!data || (filters.postalCodes.length === 1 && filters.postalCodePrefixes.length === 0)) {
     return null;
@@ -67,7 +54,7 @@ export function MedianPricePerM2ChoroplethMapManager({ variant }: props) {
       postalCode,
       fill: cmap(median),
       stroke: 'white',
-      tooltip: `${postalCode}: ${median.toFixed(variant === 'buy' ? 0 : 2)}\u00A0€/m² (${count}\u00A0Inserate)`,
+      tooltip: `${postalCode}: ${median.toFixed(filters.realEstateListingType === 'eigentumswohnung' ? 0 : 2)}\u00A0€/m² (${count}\u00A0Inserate)`,
     });
   });
 

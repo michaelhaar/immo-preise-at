@@ -1,3 +1,4 @@
+import { realEstateListingTypes } from '@/lib/constants';
 import { getDbClient } from '@/lib/db-client';
 import { baseProcedure } from '@/lib/trpc/init';
 import { getRequiredEnvVar, transformNamedArgsToPositionalArgs } from '@/lib/utils';
@@ -14,7 +15,7 @@ const outputSchema = z.array(
 export const getNewListingsData = baseProcedure
   .input(
     z.object({
-      variant: z.enum(['buy', 'rent']),
+      realEstateListingType: z.enum(realEstateListingTypes),
       postalCodes: z.array(z.string()),
       postalCodePrefixes: z.array(z.string()),
       lastNDays: z.number(),
@@ -22,9 +23,9 @@ export const getNewListingsData = baseProcedure
   )
   .output(outputSchema)
   .query(async (opts) => {
-    const { variant, postalCodes, postalCodePrefixes, lastNDays } = opts.input;
+    const { realEstateListingType, postalCodes, postalCodePrefixes, lastNDays } = opts.input;
 
-    const priceColumn = variant === 'buy' ? 'purchasingPrice' : 'rent';
+    const priceColumn = realEstateListingType === 'eigentumswohnung' ? 'purchasingPrice' : 'rent';
     const [postalCodeCondition, { postalCodesLike }] = getPostalCodeCondition({ postalCodes, postalCodePrefixes });
 
     const { rows } = await getDbClient().execute(

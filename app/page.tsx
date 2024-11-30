@@ -1,17 +1,20 @@
-import { FilterDateRange } from '@/components/ui/filters/filter-date-range';
 import { FilterRegions } from '@/components/ui/filters/filter-regions';
+import { Filters } from '@/components/ui/filters/filters';
 import { RentBuySection } from '@/components/ui/rent-buy-section';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import Link from 'next/link';
+import { Viewport } from 'next';
 import { Suspense } from 'react';
+
+export const viewport: Viewport = {
+  maximumScale: 1,
+};
 
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-items-center gap-16 p-4 pb-20 font-[family-name:var(--font-geist-sans)] sm:p-20">
       <main className="row-start-2 flex w-full max-w-3xl flex-col gap-8">
-        <div>
+        {/* <div>
           <div className="font-bold">Woher kommen die angezeigten Daten?</div>
-          <p>
+          <p className="mt-1">
             <Link className="underline" href="https://www.willhaben.at/" target="_blank">
               Willhaben
             </Link>{' '}
@@ -26,31 +29,19 @@ export default function Home() {
             werden Preis, m2 und PLZ von Immobilien-Inseraten anonymisiert extrahiert und auf dieser Seite aufbereitet,
             um dir einen Überblick über den Immobilienmarkt zu geben.
           </p>
-        </div>
+        </div> */}
         <Suspense>
           <div>
-            <div className="font-bold">Welche Region interessiert dich?</div>
+            <div className="mt-4 text-xl font-bold">Welche Region interessiert dich?</div>
             <div className="mt-4 flex gap-4">
               <FilterRegions />
-              {/* <FilterDateRange /> */}
             </div>
           </div>
           <div className="flex flex-row items-center justify-between">
-            <h2 className="text-xl font-bold sm:text-3xl">Angebotspreise</h2>
-            <FilterDateRange />
+            <h2 className="text-2xl font-bold sm:text-3xl">Angebotspreise</h2>
+            <Filters />
           </div>
-          <Tabs defaultValue="buy" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="buy">Eigentumswohnungen</TabsTrigger>
-              <TabsTrigger value="rent">Mietwohnungen</TabsTrigger>
-            </TabsList>
-            <TabsContent value="buy">
-              <RentBuySection variant="buy" />
-            </TabsContent>
-            <TabsContent value="rent">
-              <RentBuySection variant="rent" />
-            </TabsContent>
-          </Tabs>
+          <RentBuySection />
         </Suspense>
       </main>
     </div>
