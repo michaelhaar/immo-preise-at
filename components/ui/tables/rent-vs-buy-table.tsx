@@ -23,7 +23,7 @@ export function RentVsBuyTable({ data }: RentVsBuyTableProps) {
     <div>
       <table className="w-full text-sm">
         <thead>
-          <tr className="[&_th]:p-2">
+          <tr className="[&_th]:px-1 [&_th]:py-2">
             <th className="text-left">PLZ</th>
             <th className="text-left">⌀ Kaufpreis</th>
             <th className="text-left">⌀ Mietpreis</th>
@@ -32,7 +32,7 @@ export function RentVsBuyTable({ data }: RentVsBuyTableProps) {
         </thead>
         <tbody>
           {sortedData.slice(pageIdx * pageSize, pageIdx * pageSize + pageSize).map((d) => (
-            <tr key={d.postalCode} className="[&_td]:p-2">
+            <tr key={d.postalCode} className="[&_td]:px-1 [&_td]:py-2">
               <td>{d.postalCode}</td>
               <td>{formatNumber(d.buyPrice, { unit: '€/m²', decimalPlaces: 0 })}</td>
               <td>{formatNumber(d.rentPrice, { unit: '€/m²', decimalPlaces: 1 })}</td>
@@ -48,7 +48,12 @@ export function RentVsBuyTable({ data }: RentVsBuyTableProps) {
   function renderTablePagination() {
     return (
       <div className="mt-2 flex items-center justify-between gap-1">
-        <Button variant="ghost" onClick={() => setPageIdx((prev) => Math.max(0, prev - 1))} disabled={pageIdx === 0}>
+        <Button
+          variant="ghost"
+          onClick={() => setPageIdx((prev) => Math.max(0, prev - 1))}
+          disabled={pageIdx === 0}
+          className="px-0"
+        >
           <ChevronLeftIcon /> Vorherige
         </Button>
         <span className="text-sm text-muted-foreground">
@@ -58,6 +63,7 @@ export function RentVsBuyTable({ data }: RentVsBuyTableProps) {
           variant="ghost"
           onClick={() => setPageIdx((prev) => Math.min(prev + 1, pageCount - 1))}
           disabled={pageIdx === pageCount - 1}
+          className="px-0"
         >
           Nächste <ChevronRightIcon />
         </Button>
