@@ -71,6 +71,7 @@ export function RentVsBuyCard() {
         <div className="!mt-4 flex gap-1">
           {visualizationVariants.map((visualizationVariant) => (
             <Button
+              key={visualizationVariant}
               variant="ghost"
               className={clsx(
                 visualizationVariant !== selectedVisualizationVariant ? 'text-muted-foreground/50' : undefined,
