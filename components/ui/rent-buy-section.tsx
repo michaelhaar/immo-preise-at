@@ -4,6 +4,7 @@ import { HistogramCard } from './cards/histogram-card';
 import { KpiCard } from './cards/kpi-card';
 import { MapCard } from './cards/map-card';
 import { NewListingsActivityCard } from './cards/new-listings-activity-card';
+import { RentVsBuyCard } from './cards/rent-vs-buy-card';
 import { ScatterCard } from './cards/scatter-card';
 
 export function RentBuySection() {
@@ -14,6 +15,7 @@ export function RentBuySection() {
       <NewListingsActivityCard />
       <ScatterCard />
       <HistogramCard />
+      <RentVsBuyCard />
     </div>
   );
 }
